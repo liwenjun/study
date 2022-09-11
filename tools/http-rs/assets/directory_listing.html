@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="application-name" content="http">
+    <meta name="author" content="http developers">
+    <meta name="description" content="Directory listing of {0}">
+    <link href="{favicon}" rel="icon" type="image/x-icon" />
+    <script type="text/javascript">{date}</script>
+    <script type="text/javascript">{adjust_tz}</script>
+    {1}
+    <title>Directory listing — {0}</title>
+    <style type="text/css">
+      abbr[title] {
+        border-bottom: none;
+        text-decoration: none;
+      }
+
+      .pre-list {
+        margin-bottom: 0;
+      }
+
+      table {
+        border-collapse: collapse;
+      }
+
+      td:nth-child(2), td:nth-child(3) {
+        padding-right: 5pt;
+      }
+
+      td:nth-child(3) a, td:nth-child(4) a, td:nth-child(5) a {
+        color: inherit;
+      }
+
+      td:nth-child(4) {
+        text-align: right;
+      }
+
+      td:nth-child(5) {
+        padding-left: 5pt;
+      }
+
+      tr:nth-child(n+4) td:nth-child(5) a {
+        display: inline-block;
+      }
+
+      td > a {
+        display: block;
+        text-decoration: none;
+      }
+
+      td > input {
+        height: 1em;
+      }
+
+      tr:hover {
+        background-color: #eee;
+      }
+
+      tr {
+        border-bottom: solid 1px #ccc;
+      }
+
+      tr:last-child {
+        border-bottom: none;
+      }
+
+      .dir_icon:before {
+        content: url('{dir_icon}');
+      }
+
+      .file_icon:before {
+        content: url('{file_icon}');
+      }
+
+      .file_binary_icon:before {
+        content: url('{file_binary_icon}');
+      }
+
+      .file_image_icon:before {
+        content: url('{file_image_icon}');
+      }
+
+      .file_text_icon:before {
+        content: url('{file_text_icon}');
+      }
+
+      .back_arrow_icon:before {
+        content: url('{back_arrow_icon}');
+      }
+
+      .new_dir_icon:before {
+        content: url('{new_dir_icon}');
+      }
+
+      .delete_file_icon:before {
+        content: url('{delete_file_icon}');
+      }
+
+      .rename_icon:before {
+        content: url('{rename_icon}');
+      }
+
+      .confirm_icon:before {
+        content: url('{confirm_icon}');
+      }
+
+      .delete_file_icon, .rename_icon, .confirm_icon {
+        font-size: 0;
+      }
+
+      .has-log {
+        font-size: inherit;
+      }
+    </style>
+  </head>
+  <body>
+    <div>
+      <p class="pre-list"> {0} 文件列表:</p>
+      <hr />
+      <table>
+        <tr><th></th> <th>名称</th> <th>最新修改 (UTC)</th> <th>大小</th> {5}</tr>
+        {2}
+        {6}
+        {3}
+      </table>
+    </div>
+    <p></p>
+    {4}
+    <hr />
+    <p>
+      <a href="https://github.com/thecoshman/http">Host These Things Please</a> — a basic HTTP server for hosting a folder fast and simply
+    </p>
+  </body>
+</html>
