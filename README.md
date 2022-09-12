@@ -9,5 +9,5 @@
 - **notes**   学习笔记
 - **exercises** 过程练习
 - **projects**  实战项目
-- **tools**  自编实用小工具
+- **tools**  实用小工具
 
