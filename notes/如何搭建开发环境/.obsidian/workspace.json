@@ -1,0 +1,185 @@
+{
+  "main": {
+    "id": "5279dfb3fd94b302",
+    "type": "split",
+    "children": [
+      {
+        "id": "b78027284dfa5c59",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "bb1e4e802d08072b",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "-=索引=-.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          },
+          {
+            "id": "42d9d66ec8c35c18",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "-=索引=-.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          },
+          {
+            "id": "70131870fd90089b",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Oracle客户端配置.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          }
+        ],
+        "currentTab": 2
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "05824528873ad88a",
+    "type": "split",
+    "children": [
+      {
+        "id": "283d7b719056a452",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "5483e9b11b0a9a2d",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "0f7e9e7749ee1ede",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "149d6935ff62d1d4",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {}
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "9ff10966d9fc2bd5",
+    "type": "split",
+    "children": [
+      {
+        "id": "1cacee8fb30c5d44",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "e095139a5aa2d0bb",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "Oracle客户端配置.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "45c175f86ffb8199",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "Oracle客户端配置.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "dadb0d274d003a74",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true
+              }
+            }
+          },
+          {
+            "id": "3097d8570f2ce265",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "Oracle客户端配置.md"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:打开快速切换": false,
+      "graph:查看关系图谱": false,
+      "canvas:新建白板": false,
+      "daily-notes:打开/创建今天的日记": false,
+      "templates:插入模板": false,
+      "command-palette:打开命令面板": false
+    }
+  },
+  "active": "70131870fd90089b",
+  "lastOpenFiles": [
+    "-=索引=-.md",
+    "双机系统的Linux开发环境.md",
+    "将外网机的开发环境移植到内网.md",
+    "基于wsl2搭建Linux开发环境.md",
+    "基于scoop搭建Windows开发环境.md",
+    "基于Docker Desktop提供服务组件.md",
+    "Oracle客户端配置.md",
+    "postgresql常见命令及操作.md"
+  ]
+}

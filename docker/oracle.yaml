@@ -1,0 +1,13 @@
+version: "3"
+
+services:
+  oracle-xdb-server:
+    image: datagrip/oracle:11.2
+    volumes:
+      - oracle_data_volume:/u01/app/oracle
+    ports:
+      - 1521:1521
+      - 8082:8080
+
+volumes:
+  oracle_data_volume:
