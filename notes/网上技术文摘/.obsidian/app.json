@@ -1,1 +1,7 @@
-{}
+{
+  "newLinkFormat": "relative",
+  "useMarkdownLinks": true,
+  "attachmentFolderPath": "./assets",
+  "userIgnoreFilters": null,
+  "showUnsupportedFiles": false
+}

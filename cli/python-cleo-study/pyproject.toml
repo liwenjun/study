@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "python-cleo-study"
+version = "1.0.0"
+description = ""
+authors = ["liwenjun <liwenjun@21cn.com>"]
+readme = "README.md"
+packages = [{include = "python_cleo_study"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+cleo = "^2.0.1"
+
+[tool.poetry.scripts]
+cli = 'python_cleo_study.cli:main'
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

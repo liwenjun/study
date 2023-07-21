@@ -1,0 +1,22 @@
+# Commons
+**/*.exe
+
+# Rust
+**/debug/
+**/target/
+**/Cargo.lock
+
+# Elm
+**/elm-stuff/
+**/dist/
+**/build/
+**/.elm-land/
+
+# Python
+**/.venv/
+**/__pycache__/
+**/poetry.lock
+
+# Nodejs
+**/node_modules/
+**/package-lock.json
