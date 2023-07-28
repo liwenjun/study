@@ -1,0 +1,5 @@
+{
+    "rust-analyzer.server.extraEnv": {
+        "OCI_LIB_DIR": "D:\\App\\instantclient_12_2\\sdk\\lib\\msvc"
+    }
+}
