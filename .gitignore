@@ -20,3 +20,6 @@
 # Nodejs
 **/node_modules/
 **/package-lock.json
+
+# Sqlite
+**/*.sqlite*
