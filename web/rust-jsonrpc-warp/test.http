@@ -1,0 +1,64 @@
+@url = http://127.0.0.1:3030/rpc
+
+### 
+
+POST {{url}} HTTP/1.1
+content-type: application/json
+
+{
+    "jsonrpc": "2.0",
+    "method": "add",
+    "params": [10, 2],
+    "id": 1
+}
+
+### 试错
+
+POST {{url}} HTTP/1.1
+content-type: application/json
+
+{
+    "jsonrpc": "2.0",
+    "method": "add",
+    "params": [10,2,3],
+    "id": 1
+}
+
+### 
+
+POST {{url}} HTTP/1.1
+content-type: application/json
+
+{
+    "jsonrpc": "2.0",
+    "method": "sub",
+    "params": {"a": 12, "b": 2},
+    "id": 1
+}
+
+
+### 试错
+
+POST {{url}} HTTP/1.1
+content-type: application/json
+
+{
+    "jsonrpc": "2.0",
+    "method": "sub",
+    "params": {"Aa": 12, "b": 2, "c": 3},
+    "id": 1
+}
+
+
+
+### 试错
+
+POST {{url}} HTTP/1.1
+content-type: application/json
+
+{
+    "jsonrpc": "2.0",
+    "method": "none",
+    "params": {"a": 12, "b": 2, "c": 3},
+    "id": 1
+}
