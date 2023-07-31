@@ -21,6 +21,8 @@
 **/node_modules/
 **/package-lock.json
 
-
 # mdbook
 **/book
+
+# Sqlite
+**/*.sqlite*
