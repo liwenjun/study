@@ -11,7 +11,7 @@
 
 
 
-[我的知识图谱](KnowledgeGraph.md)
+[我的知识图谱](./notes/my-knowledge-graph/src/home.md)
 
 
 

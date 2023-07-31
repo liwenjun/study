@@ -16,13 +16,9 @@ sibyl = { version = "0.6", features = ["blocking"] }
 sibyl = { version = "0.6", features = ["nonblocking", "tokio"] }
 ```
 
-
-
 ## 先决条件
 
 `Sibyl` 需要 `Windows` 或 `Linux` 已安装 `Oracle` 客户端，支持的最低版本是 `12.2`。
-
-
 
 
 ## 构建说明
