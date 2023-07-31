@@ -1,0 +1,9 @@
+[book]
+authors = ["李文军"]
+language = "zh"
+multilingual = false
+src = "src"
+title = "我的知识图谱"
+
+[output.html.fold]
+enable = true

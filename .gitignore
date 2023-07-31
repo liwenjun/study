@@ -22,7 +22,8 @@
 **/package-lock.json
 
 # mdbook
-**/book
+notes/**/book
+notes/**/src/SUMMARY.md
 
 # Sqlite
 **/*.sqlite*
