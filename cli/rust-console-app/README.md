@@ -1,4 +1,4 @@
-# `rust-console-app` 命令行应用
+# `rust-console-app` 控制台应用
 
 本项目应用 [console-rs](https://github.com/console-rs) 组织的三个库 [console](https://github.com/console-rs/console)、[dialoguer](https://github.com/console-rs/dialoguer)、[indicatif](https://github.com/console-rs/indicatif)来创建控制台命令行应用程序。
 

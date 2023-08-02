@@ -4,12 +4,12 @@
 
 以下是日常所用到的软件工具：
 
-- [`git`](./git.md) 代码配置管理工具
+- [`git`](./git.md) [代码配置管理工具](./git.md)
 
-- [`svn`](./svn.md) 版本管理工具
+- [`svn`](./svn.md) [版本管理工具](./svn.md)
 
-- [`scoop`](./scoop.md) `Windows`平台软件(包)管理器
+- [`scoop`](./scoop.md) [`Windows`平台软件(包)管理器](./scoop.md)
 
-- [`volta`](./volta.md) 无忧的`JavaScript`工具管理器
+- [`volta`](./volta.md) [无忧的`JavaScript`工具管理器](./volta.md)
 
-- [`wsl`](./wsl.md) 适用于 `Linux` 的 `Windows` 子系统
+- [`wsl`](./wsl.md) [适用于 `Linux` 的 `Windows` 子系统](./wsl.md)，[实战安装`CentOSS7`](./wsl-centos7.md)，[实战安装`openSUSE`](./wsl-opensuse-tumbleweed.md)
