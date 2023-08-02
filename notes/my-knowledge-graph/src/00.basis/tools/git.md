@@ -1,16 +1,14 @@
 # Git原理及最佳实践
 
 
-
 ## 工作原理 / 流程
 
-![img](..\..\_img\v2-3bc9d5f2c49a713c776e69676d7d56c5_720w.webp)
+![img](../../_img/v2-3bc9d5f2c49a713c776e69676d7d56c5_720w.webp)
 
 Workspace：工作区
 Index / Stage：暂存区
 Repository：仓库区（或本地仓库）
 Remote：远程仓库
-
 
 
 ## Git 基本概念
@@ -63,10 +61,9 @@ Git 用以计算校验和的机制叫做 `SHA-1` 散列（hash，哈希）。这
 HEAD 指向的就是当前分支的最新提交图片
 
 
-
 ## 基本用法
 
-![图片](..\..\_img\Sqqm3oJYw2iayuqDDibKazmjb6d5jkvfQYxNnYOkje1YbpPGkhBvib6cbdI4whmHpNsmrg7xdTFjK7qELjHegzpqsoUdqEtIKAL.svg)
+![图片](../../_img/Sqqm3oJYw2iayuqDDibKazmjb6d5jkvfQYxNnYOkje1YbpPGkhBvib6cbdI4whmHpNsmrg7xdTFjK7qELjHegzpqsoUdqEtIKAL.svg)
 
 上面的四条命令在工作目录、暂存目录（也叫做索引）和仓库之间复制文件。
 
@@ -90,14 +87,13 @@ git add -p
 
 也可以跳过暂存区域直接从仓库取出文件或者直接提交代码。
 
-![图片](..\..\_img\Sqqm3oJYw2iayuqDDibKazmjb6d5jkvfQYxNnYOkje1YbpPGkhBvib6cbdI4whmHpNsmrg7xdTFjK7qELjHegzpqsoUdqEtIKAM.svg)
+![图片](../../_img/Sqqm3oJYw2iayuqDDibKazmjb6d5jkvfQYxNnYOkje1YbpPGkhBvib6cbdI4whmHpNsmrg7xdTFjK7qELjHegzpqsoUdqEtIKAM.svg)
 
 ```bash
 git commit -a #相当于运行git add把所有当前目录下的文件加入暂存区域再运行。
 git commit files #进行一次包含最后一次提交加上工作目录中文件快照的提交。并且文件被添加到暂存区域。
 git checkout HEAD – files #回滚到复制最后一次提交。
 ````
-
 
 
 ## Git 命令
@@ -390,7 +386,7 @@ release 为预上线分支，发布提测阶段，会release分支代码为基�
 - 补丁分支
 - 修改分支
 
-![图片](..\..\_img\tuSaKc6SfPpgHZSPf55H98D0aOfWLqcO2y9pvdWDm78QVCkpLOgjPvUaKkvMbkutx6HaTAFMTFUhbbshApRFOA.webp)
+![图片](../../_img/tuSaKc6SfPpgHZSPf55H98D0aOfWLqcO2y9pvdWDm78QVCkpLOgjPvUaKkvMbkutx6HaTAFMTFUhbbshApRFOA.webp)
 
 #### Github Flow
 
@@ -401,7 +397,7 @@ release 为预上线分支，发布提测阶段，会release分支代码为基�
 - 部署检测
 - 合并代码
 
-![图片](..\..\_img\tuSaKc6SfPpgHZSPf55H98D0aOfWLqcOaGB2nsDiaXJbbnNicIo1icicN469x8Q6l67WicHbvWrl1X6ia7WUTq0ib.webp)
+![图片](../../_img/tuSaKc6SfPpgHZSPf55H98D0aOfWLqcOaGB2nsDiaXJbbnNicIo1icicN469x8Q6l67WicHbvWrl1X6ia7WUTq0ib.webp)
 
 #### Gitlab Flow
 
@@ -409,7 +405,7 @@ release 为预上线分支，发布提测阶段，会release分支代码为基�
 - 带环境分支
 - 带发布分支
 
-![图片](..\..\_img\tuSaKc6SfPpgHZSPf55H98D0aOfWLqcO2rWwMeiaIwNYOblicxpKvR6zdC8ibUMAaxw7I2dYyDqTOCYa5K4uiaBMU.webp)
+![图片](../../_img/tuSaKc6SfPpgHZSPf55H98D0aOfWLqcO2rWwMeiaIwNYOblicxpKvR6zdC8ibUMAaxw7I2dYyDqTOCYa5K4uiaBMU.webp)
 
 ## 日常使用最佳实践
 
@@ -445,7 +441,7 @@ release 为预上线分支，发布提测阶段，会release分支代码为基�
 
 日常使用只要记住 6 个命令就可以了。
 
-![图片](..\..\_img\tuSaKc6SfPpgHZSPf55H98D0aOfWLqcORgRtukWNmiaHbiczHH6VdCY9W7Xic1IqNvJpHg3xRFtTsXL8MriaplCli.webp)
+![图片](../../_img/tuSaKc6SfPpgHZSPf55H98D0aOfWLqcORgRtukWNmiaHbiczHH6VdCY9W7Xic1IqNvJpHg3xRFtTsXL8MriaplCli.webp)
 
 ```bash
 # 工作区 -> 暂存区
@@ -583,7 +579,7 @@ $ git log
 * c8f7dea - 1st commit
 ```
 
-![图片](..\..\_img\tuSaKc6SfPpgHZSPf55H98D0aOfWLqcOfcHDpnUpsE5kDGnff9WRx6BcPp6IwWCvvq4a4ia5fudGImVfoHrpprg.webp)
+![图片](../../_img/tuSaKc6SfPpgHZSPf55H98D0aOfWLqcOfcHDpnUpsE5kDGnff9WRx6BcPp6IwWCvvq4a4ia5fudGImVfoHrpprg.webp)
 
 #### 删除意外调试的测试代码
 
@@ -666,7 +662,6 @@ $ git cherry-pick 4bc8703
 ```
 
 
-
 ## 批量修改历史提交
 
 批量修改历史提交虽然不常用，但是理解的话可以省下很多时间！
@@ -693,7 +688,6 @@ $ git filter-branch --commit-filter '
         git commit-tree "$@"
   fi' HEAD
 ```
-
 
 
 ## 灵活使用钩子函数
@@ -750,7 +744,6 @@ $ git push origin master
 ```
 
 
-
 ## 快速克隆大型项目
 
 在大项目中工作中，拉取代码非常占时间！
@@ -776,7 +769,6 @@ $ git checkout FETCH_HEAD
 # 克隆不包含LFS数据
 $ GIT_LFS_SKIP_SMUDGE=1 git clone http://xxx.xx.xxx/xxx
 ```
-
 
 
 ## 如何处理工作中断
@@ -848,7 +840,6 @@ $ git reset --soft <commit/reference>
 # 本地仓库覆盖到工作区(保留修改并加到暂存区)
 $ git reset --hard <commit/reference>
 ```
-
 
 
 ## 推荐学习材料
