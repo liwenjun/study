@@ -3,5 +3,6 @@
   "useMarkdownLinks": true,
   "attachmentFolderPath": "./assets",
   "userIgnoreFilters": null,
-  "showUnsupportedFiles": false
+  "showUnsupportedFiles": false,
+  "readableLineLength": false
 }

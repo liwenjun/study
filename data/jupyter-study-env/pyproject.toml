@@ -1,0 +1,26 @@
+[tool.poetry]
+name = "jupyter-study-env"
+version = "0.1.0"
+description = ""
+authors = ["liwenjun <liwenjun@21cn.com>"]
+readme = "README.md"
+packages = [{include = "jupyter_study_env"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+
+
+[[tool.poetry.source]]
+name = "aliyun"
+url = "https://mirrors.aliyun.com/pypi/simple/"
+priority = "default"
+
+
+[tool.poetry.group.dev.dependencies]
+jupyter = "^1.0.0"
+jupyterlab = "^4.0.3"
+jupyterlab-language-pack-zh-cn = "^4.0.post1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
