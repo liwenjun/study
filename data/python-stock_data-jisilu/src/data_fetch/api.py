@@ -4,14 +4,15 @@ import requests
 from fake_useragent import UserAgent
 
 ua = UserAgent()
-baseUrl = 'https://www.jisilu.cn'
+baseUrl = "https://www.jisilu.cn"
 
-def get_etf_detail(fund, keys=None):
+
+def get_etf_detail(fund: str, keys=None):
     """获取etf基金个股明细数据
-    
+
     参数fund: 基金代码，例: '588080'
     参数keys: 过滤输出结果字段，例: ()
-    
+
     参考: 这是返回结果其中一个片段的完整信息, json格式。
     ```json
         {
@@ -34,22 +35,22 @@ def get_etf_detail(fund, keys=None):
         }
     ```
     """
-    default_keys = ('hist_dt','amount','amount_incr','fund_nav')
-    etf1d = baseUrl + '/data/etf/detail_hists/'
+    default_keys = ("hist_dt", "amount", "amount_incr", "fund_nav", "trade_price")
+    etf1d = baseUrl + "/data/etf/detail_hists/"
 
     if keys is None:
         keys = default_keys
 
-    data = {'is_search': 1, 'fund_id': fund}
-    r = requests.post(etf1d, headers={'User-Agent': ua.random}, data=data)
-    ds = r.json()['rows']
-    res = map(lambda d: { key: d['cell'][key] for key in set(keys) }, ds)
+    data = {"is_search": 1, "fund_id": fund}
+    r = requests.post(etf1d, headers={"User-Agent": ua.random}, data=data)
+    ds = r.json()["rows"]
+    res = map(lambda d: {key: d["cell"][key] for key in set(keys)}, ds)
     return list(res)
 
 
 def get_etf1(keys=None):
     """获取指数etf基金列表数据
-    
+
     参数keys: 过滤输出结果字段，例: ('fund_id','fund_nm','index_nm','issuer_nm','amount','unit_total','unit_incr')
 
     参考: 这是返回结果其中一个个股的完整信息, json格式。
@@ -57,8 +58,8 @@ def get_etf1(keys=None):
         {
             "id": "159601",
             "cell": {
-                "fund_id": "159601",   -- 基金代码
-                "fund_nm": "A50",      -- 基金名称
+                "fund_id": "159601",      -- 基金代码
+                "fund_nm": "A50",         -- 基金名称
                 "index_id": "-",
                 "fee": "0.60",
                 "m_fee": "0.50",
@@ -81,8 +82,8 @@ def get_etf1(keys=None):
                 "estimate_value": "0.8157",
                 "last_est_time": "10:57:22",
                 "discount_rt": "0.03",
-                "fund_nav": "0.8136",
-                "nav_dt": "2023-08-03",
+                "fund_nav": "0.8136",            -- 基金净值
+                "nav_dt": "2023-08-03",          -- 净值日期
                 "index_nm": "中国A50互联互通",    -- 指数
                 "index_increase_rt": "0.28",
                 "idx_price_dt": "2023-08-04",
@@ -94,13 +95,21 @@ def get_etf1(keys=None):
         }
     ```
     """
-    default_keys = ('fund_id','fund_nm','index_nm','issuer_nm','amount','unit_total','unit_incr')
-    etf1 = baseUrl + '/data/etf/etf_list/'
+    default_keys = (
+        "fund_id",
+        "fund_nm",
+        "index_nm",
+        "issuer_nm",
+        "amount",
+        "unit_total",
+        "unit_incr",
+    )
+    etf1 = baseUrl + "/data/etf/etf_list/"
 
     if keys is None:
         keys = default_keys
 
-    r = requests.get(etf1, headers={'User-Agent': ua.random})
-    ds = r.json()['rows']
-    res = map(lambda d: { key: d['cell'][key] for key in set(keys) }, ds)
+    r = requests.get(etf1, headers={"User-Agent": ua.random})
+    ds = r.json()["rows"]
+    res = map(lambda d: {key: d["cell"][key] for key in set(keys)}, ds)
     return list(res)
