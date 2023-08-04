@@ -1,0 +1,100 @@
+{
+    "page": 1,
+    "rows": [
+        {
+            "id": "2023-08-03",
+            "cell": {
+                "fund_id": "160106",
+                "price_dt": "2023-08-03",
+                "price": "1.432",
+                "net_value_dt": "2023-08-03",
+                "net_value": "1.4369",
+                "est_val_dt": "2023-08-03",
+                "est_val": "1.4420",
+                "est_val_increase_rt": null,
+                "est_error_rt": "0.35",
+                "discount_rt": "-0.34",
+                "amount": 4599,
+                "amount_incr": -1,
+                "amount_increase_rt": "-0.020",
+                "ref_increase_rt": "0.55"
+            }
+        },
+        {
+            "id": "2023-08-02",
+            "cell": {
+                "fund_id": "160106",
+                "price_dt": "2023-08-02",
+                "price": "1.423",
+                "net_value_dt": "2023-08-02",
+                "net_value": "1.4341",
+                "est_val_dt": "2023-08-02",
+                "est_val": "1.4342",
+                "est_val_increase_rt": null,
+                "est_error_rt": "0.01",
+                "discount_rt": "-0.77",
+                "amount": 4600,
+                "amount_incr": 0,
+                "amount_increase_rt": "0.000",
+                "ref_increase_rt": "-0.81"
+            }
+        },
+        {
+            "id": "2023-08-01",
+            "cell": {
+                "fund_id": "160106",
+                "price_dt": "2023-08-01",
+                "price": "1.440",
+                "net_value_dt": "2023-08-01",
+                "net_value": "1.4458",
+                "est_val_dt": "2023-08-01",
+                "est_val": "1.4474",
+                "est_val_increase_rt": null,
+                "est_error_rt": "0.11",
+                "discount_rt": "-0.40",
+                "amount": 4600,
+                "amount_incr": -9,
+                "amount_increase_rt": "-0.200",
+                "ref_increase_rt": "-0.41"
+            }
+        },
+        {
+            "id": "2023-07-31",
+            "cell": {
+                "fund_id": "160106",
+                "price_dt": "2023-07-31",
+                "price": "1.444",
+                "net_value_dt": "2023-07-31",
+                "net_value": "1.4534",
+                "est_val_dt": "2023-07-31",
+                "est_val": "1.4497",
+                "est_val_increase_rt": null,
+                "est_error_rt": "-0.25",
+                "discount_rt": "-0.65",
+                "amount": 4609,
+                "amount_incr": 0,
+                "amount_increase_rt": "0.000",
+                "ref_increase_rt": "0.66"
+            }
+        },
+        {
+            "id": "2023-05-24",
+            "cell": {
+                "fund_id": "160106",
+                "price_dt": "2023-05-24",
+                "price": "1.411",
+                "net_value_dt": "2023-05-24",
+                "net_value": "1.4062",
+                "est_val_dt": "2023-05-24",
+                "est_val": "1.4104",
+                "est_val_increase_rt": null,
+                "est_error_rt": "0.30",
+                "discount_rt": "0.34",
+                "amount": 4777,
+                "amount_incr": 0,
+                "amount_increase_rt": "0.000",
+                "ref_increase_rt": "-0.05"
+            }
+        }
+    ]
+}

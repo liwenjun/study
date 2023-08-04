@@ -1,0 +1,33 @@
+[tool.poetry]
+name = "python-stock-data-jisilu"
+version = "1.0.0"
+description = "股票数据抓取与处理"
+authors = ["李文军 <liwenjun@21cn.com>"]
+readme = "README.md"
+packages = [
+    {include = "data_fetch", from = "src"},
+    {include = "data_process", from = "src"},
+    {include = "data_presentation", from = "src"},
+]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+requests = "^2.31.0"
+cleo = "^2.0.1"
+fake-useragent = "^1.2.1"
+
+
+[[tool.poetry.source]]
+name = "aliyun"
+url = "https://mirrors.aliyun.com/pypi/simple/"
+priority = "default"
+
+
+[tool.poetry.group.dev.dependencies]
+jupyter = "^1.0.0"
+jupyterlab = "^4.0.4"
+jupyterlab-language-pack-zh-cn = "^4.0.post1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

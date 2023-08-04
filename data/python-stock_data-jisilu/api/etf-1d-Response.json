@@ -1,0 +1,185 @@
+{
+    "page": 1,
+    "rows": [
+        {
+            "id": "2023-08-04",
+            "cell": {
+                "hist_dt": "2023-08-04",
+                "estimate_value": "0.9939",
+                "estimate_diff": "-0.01",
+                "trade_price": "0.9940",
+                "fund_nav": "0.9938",
+                "discount_rt": "0.02%",
+                "idx_incr_rt": "0.20%",
+                "amount": 2616463,
+                "amount_incr": 21300,
+                "increase_rt": "0.82",
+                "notes": null,
+                "idx_pb": "-",
+                "idx_pe": "-"
+            }
+        },
+        {
+            "id": "2023-08-03",
+            "cell": {
+                "hist_dt": "2023-08-03",
+                "estimate_value": "0.9939",
+                "estimate_diff": "-0.01",
+                "trade_price": "0.9940",
+                "fund_nav": "0.9938",
+                "discount_rt": "0.02%",
+                "idx_incr_rt": "0.20%",
+                "amount": 2595163,
+                "amount_incr": 13200,
+                "increase_rt": "0.51",
+                "notes": null,
+                "idx_pb": "-",
+                "idx_pe": "-"
+            }
+        },
+        {
+            "id": "2023-08-02",
+            "cell": {
+                "hist_dt": "2023-08-02",
+                "estimate_value": "0.9918",
+                "estimate_diff": "0.01",
+                "trade_price": "0.9930",
+                "fund_nav": "0.9919",
+                "discount_rt": "0.11%",
+                "idx_incr_rt": "-0.13%",
+                "amount": 2581963,
+                "amount_incr": 6300,
+                "increase_rt": "0.24",
+                "notes": null,
+                "idx_pb": "-",
+                "idx_pe": "-"
+            }
+        },
+        {
+            "id": "2023-08-01",
+            "cell": {
+                "hist_dt": "2023-08-01",
+                "estimate_value": "0.9931",
+                "estimate_diff": "0.00",
+                "trade_price": "0.9940",
+                "fund_nav": "0.9931",
+                "discount_rt": "0.09%",
+                "idx_incr_rt": "0.07%",
+                "amount": 2575663,
+                "amount_incr": 31500,
+                "increase_rt": "1.24",
+                "notes": null,
+                "idx_pb": "-",
+                "idx_pe": "-"
+            }
+        },
+        {
+            "id": "2023-07-31",
+            "cell": {
+                "hist_dt": "2023-07-31",
+                "estimate_value": "0.9925",
+                "estimate_diff": "-0.01",
+                "trade_price": "0.9930",
+                "fund_nav": "0.9924",
+                "discount_rt": "0.06%",
+                "idx_incr_rt": "0.66%",
+                "amount": 2544163,
+                "amount_incr": 12600,
+                "increase_rt": "0.50",
+                "notes": null,
+                "idx_pb": "-",
+                "idx_pe": "-"
+            }
+        },
+        {
+            "id": "2023-07-28",
+            "cell": {
+                "hist_dt": "2023-07-28",
+                "estimate_value": "0.9860",
+                "estimate_diff": "0.00",
+                "trade_price": "0.9860",
+                "fund_nav": "0.9860",
+                "discount_rt": "0.00%",
+                "idx_incr_rt": "1.09%",
+                "amount": 2531563,
+                "amount_incr": 20400,
+                "increase_rt": "0.81",
+                "notes": null,
+                "idx_pb": "-",
+                "idx_pe": "-"
+            }
+        },
+        {
+            "id": "2023-07-27",
+            "cell": {
+                "hist_dt": "2023-07-27",
+                "estimate_value": "0.9753",
+                "estimate_diff": "0.01",
+                "trade_price": "0.9760",
+                "fund_nav": "0.9754",
+                "discount_rt": "0.06%",
+                "idx_incr_rt": "-0.97%",
+                "amount": 2511163,
+                "amount_incr": 13200,
+                "increase_rt": "0.53",
+                "notes": null,
+                "idx_pb": "-",
+                "idx_pe": "-"
+            }
+        },
+        {
+            "id": "2023-07-26",
+            "cell": {
+                "hist_dt": "2023-07-26",
+                "estimate_value": "0.9849",
+                "estimate_diff": "0.00",
+                "trade_price": "0.9850",
+                "fund_nav": "0.9849",
+                "discount_rt": "0.01%",
+                "idx_incr_rt": "-0.29%",
+                "amount": 2497963,
+                "amount_incr": 1800,
+                "increase_rt": "0.07",
+                "notes": null,
+                "idx_pb": "-",
+                "idx_pe": "-"
+            }
+        },
+        {
+            "id": "2023-07-25",
+            "cell": {
+                "hist_dt": "2023-07-25",
+                "estimate_value": "0.9878",
+                "estimate_diff": "0.00",
+                "trade_price": "0.9890",
+                "fund_nav": "0.9878",
+                "discount_rt": "0.12%",
+                "idx_incr_rt": "1.46%",
+                "amount": 2496163,
+                "amount_incr": 14100,
+                "increase_rt": "0.57",
+                "notes": null,
+                "idx_pb": "-",
+                "idx_pe": "-"
+            }
+        },
+        {
+            "id": "2023-05-25",
+            "cell": {
+                "hist_dt": "2023-05-25",
+                "estimate_value": "1.0446",
+                "estimate_diff": "0.00",
+                "trade_price": "1.0440",
+                "fund_nav": "1.0446",
+                "discount_rt": "-0.06%",
+                "idx_incr_rt": "0.98%",
+                "amount": 1969963,
+                "amount_incr": 16200,
+                "increase_rt": "0.83",
+                "notes": null,
+                "idx_pb": "-",
+                "idx_pe": "-"
+            }
+        }
+    ]
+}

@@ -1,0 +1,87 @@
+@baseUrl = https://www.jisilu.cn
+
+
+### 指数etf
+
+@etf1 = /data/etf/etf_list/
+GET {{baseUrl}}{{etf1}} HTTP/1.1
+content-type: application/json
+
+### 指数etf个股信息
+
+@etf1d = /data/etf/detail_hists/
+POST {{baseUrl}}{{etf1d}} HTTP/1.1
+Content-Type: application/x-www-form-urlencoded
+
+fund_id=588080
+&is_search=1
+
+
+### 黄金etf
+
+@etf2 = /data/etf/gold_list/
+GET {{baseUrl}}{{etf2}} HTTP/1.1
+content-type: application/json
+
+### 黄金etf个股信息
+
+@etf2d = /data/etf/detail_hists/
+POST {{baseUrl}}{{etf2d}} HTTP/1.1
+Content-Type: application/x-www-form-urlencoded
+
+fund_id=159812
+&is_search=1
+
+
+### 场内货币etf
+
+@etf3 = /data/etf/money_list/
+GET {{baseUrl}}{{etf3}} HTTP/1.1
+content-type: application/json
+
+
+### 欧美市场指数etf
+
+@etf4 = /data/qdii/qdii_list/
+GET {{baseUrl}}{{etf4}} HTTP/1.1
+content-type: application/json
+
+
+### 欧美市场指数etf个股信息
+
+@etf4d = /data/qdii/detail_hists/
+POST {{baseUrl}}{{etf4d}} HTTP/1.1
+Content-Type: application/x-www-form-urlencoded
+
+fund_id=513030
+&is_search=1
+
+### QDII 类数据API是一致的
+
+### 股票lof
+
+@lof1 = /data/lof/stock_lof_list/
+GET {{baseUrl}}{{lof1}} HTTP/1.1
+content-type: application/json
+
+### 股票lof个股信息
+
+@lof1d = /data/lof/hist_list/
+@fundid1 = 160106
+
+POST {{baseUrl}}{{lof1d}}{{fundid1}} HTTP/1.1
+
+
+### 指数lof
+
+@lof2 = /data/lof/index_lof_list/
+GET {{baseUrl}}{{lof2}} HTTP/1.1
+content-type: application/json
+
+
+### 指数lof个股信息
+
+@lof2d = /data/lof/hist_list/
+@fundid2 = 161121
+
+POST {{baseUrl}}{{lof2d}}{{fundid2}} HTTP/1.1
