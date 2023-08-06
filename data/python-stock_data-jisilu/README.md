@@ -17,7 +17,7 @@ cd python-stock_data-jisilu
 poetry source add --priority=default aliyun https://mirrors.aliyun.com/pypi/simple/
 
 # 添加依赖包
-poetry add requests cleo fake-useragent
+poetry add requests cleo fake-useragent tqdm
 
 # 添加开发依赖包
 poetry add -D jupyter jupyterlab jupyterlab-language-pack-zh-CN

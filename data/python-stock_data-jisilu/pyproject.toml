@@ -15,6 +15,7 @@ python = "^3.11"
 requests = "^2.31.0"
 cleo = "^2.0.1"
 fake-useragent = "^1.2.1"
+tqdm = "^4.65.0"
 
 
 [[tool.poetry.source]]
@@ -27,6 +28,11 @@ priority = "default"
 jupyter = "^1.0.0"
 jupyterlab = "^4.0.4"
 jupyterlab-language-pack-zh-cn = "^4.0.post1"
+
+
+[tool.poetry.scripts]
+cli = 'data_process.cli:main'
+
 
 [build-system]
 requires = ["poetry-core"]

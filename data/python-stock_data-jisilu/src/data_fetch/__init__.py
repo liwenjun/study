@@ -10,4 +10,4 @@ __email__ = 'liwenjun@21cn.cn'
 __version__ = '1.0.0'
 
 
-from .api import get_etf1, get_etf_detail
+from .api import get_etf, get_etf_detail

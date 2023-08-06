@@ -7,7 +7,7 @@ ua = UserAgent()
 baseUrl = "https://www.jisilu.cn"
 
 
-def get_etf_detail(fund: str, keys=None):
+def get_etf_detail(fund: str, keys: tuple = None) -> list:
     """获取etf基金个股明细数据
 
     参数fund: 基金代码，例: '588080'
@@ -44,11 +44,18 @@ def get_etf_detail(fund: str, keys=None):
     data = {"is_search": 1, "fund_id": fund}
     r = requests.post(etf1d, headers={"User-Agent": ua.random}, data=data)
     ds = r.json()["rows"]
-    res = map(lambda d: {key: d["cell"][key] for key in set(keys)}, ds)
+
+    def lba(d):
+        r = {key: d["cell"][key] for key in set(keys)}
+        r["fund_id"] = fund
+        return r
+
+    # res = map(lambda d: {key: d["cell"][key] for key in set(keys)}, ds)
+    res = map(lba, ds)
     return list(res)
 
 
-def get_etf1(keys=None):
+def get_etf(keys: tuple = None) -> (list, list):
     """获取指数etf基金列表数据
 
     参数keys: 过滤输出结果字段，例: ('fund_id','fund_nm','index_nm','issuer_nm','amount','unit_total','unit_incr')
@@ -111,5 +118,6 @@ def get_etf1(keys=None):
 
     r = requests.get(etf1, headers={"User-Agent": ua.random})
     ds = r.json()["rows"]
+    ids = [d["id"] for d in ds]
     res = map(lambda d: {key: d["cell"][key] for key in set(keys)}, ds)
-    return list(res)
+    return (ids, list(res))
