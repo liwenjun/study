@@ -38,12 +38,17 @@ poetry run jupyter-lab -- notebook
 计划用之前学习过的 `Rust` `SQLx-cli` 工具来实现数据库的创建和迁移，最大化利用现有工具。
 
 1. 创建`.env`文件，配置`DATABASE_URL`环境变量
+
 2. 执行下列命令创建数据库和迁移脚本
     ```
     sqlx db create
     sqlx mig add init-schema
     sqlx mig run
     ```
+
+3. 数据库迁移脚本
+
+    [脚本内容](./migrations/20230804133155_init-schema.sql)
 
 > 当然，如果不熟悉`Rust`也没问题，我们可以用 `Pythonic` 的方法来完成这项工作。通过安装 [Alembic](https://alembic.sqlalchemy.org/) 工具可实现数据库的创建和迁移工作。
 
