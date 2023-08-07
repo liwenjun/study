@@ -21,7 +21,7 @@ def main():
 
     cmds = [FetchCommand(), DemoCommand()]
 
-    name = "python-cleo-study"
+    name = "Stock_Data_Jisilu-cli"
     version = "1.0"
     app = Application(name=name, version=version)
 

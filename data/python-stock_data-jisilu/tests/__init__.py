@@ -2,3 +2,4 @@
 
 __author__ = '李文军'
 __email__ = 'liwenjun@21cn.cn'
+__version__ = '1.0.0'

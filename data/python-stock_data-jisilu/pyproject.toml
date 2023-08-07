@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "python-stock-data-jisilu"
-version = "1.0.0"
+version = "0.1.0"
 description = "股票数据抓取与处理"
 authors = ["李文军 <liwenjun@21cn.com>"]
 readme = "README.md"
@@ -31,7 +31,7 @@ jupyterlab-language-pack-zh-cn = "^4.0.post1"
 
 
 [tool.poetry.scripts]
-cli = 'data_process.cli:main'
+sdj_cli = 'data_process.cli:main'
 
 
 [build-system]

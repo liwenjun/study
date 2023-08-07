@@ -7,6 +7,16 @@
 [股票数据API文档](./api/README.md)
 
 
+## 使用方法
+
+```shell
+# 查看帮助信息
+poetry run sdj_cli -- -h
+
+# 抓取股票数据, 建议收盘后执行。
+poetry run sdj_cli -- fetch
+```
+
 ## 创建项目
 
 ```shell
@@ -31,11 +41,16 @@ poetry run jupyter-lab -- notebook
 
 将代码按功能进行分包，统一组织在 `src` 目录下。
 
+- data_fetch - 数据抓取功能包
+- data_process - 数据处理功能包
+- data_presentation - 数据展现功能包
+
+
 ## 创建(迁移)数据库
 
-考虑到此工具仅供个人使用，数据量也不是太大，采用`Sqlite3`数据库作为本地数据存储。
+考虑到此工具仅供个人使用，数据量也不是太大，我们选用`Sqlite3`数据库作为本地数据存储。
 
-计划用之前学习过的 `Rust` `SQLx-cli` 工具来实现数据库的创建和迁移，最大化利用现有工具。
+采用之前学过的`SQLx-cli`工具来实现数据库的创建和迁移，最大化利用现有工具。
 
 1. 创建`.env`文件，配置`DATABASE_URL`环境变量
 
@@ -50,5 +65,4 @@ poetry run jupyter-lab -- notebook
 
     [脚本内容](./migrations/20230804133155_init-schema.sql)
 
-> 当然，如果不熟悉`Rust`也没问题，我们可以用 `Pythonic` 的方法来完成这项工作。通过安装 [Alembic](https://alembic.sqlalchemy.org/) 工具可实现数据库的创建和迁移工作。
-
+> 当然，如果不熟悉`SQLx-cli`也没问题，我们可以用 `Pythonic` 的方法来完成这项工作。通过安装 [Alembic](https://alembic.sqlalchemy.org/) 工具包也可达到相同目的。

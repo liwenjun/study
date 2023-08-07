@@ -11,13 +11,13 @@
 ### 指数ETF 
 
 ```
-GET https://www.jisilu.cn/data/etf/etf_list/?___jsl=LST___t=1691116612015&rp=25&page=1
+GET /etf/etf_list/?___jsl=LST___t=1691116612015&rp=25&page=1
 ```
 
 实际验证，弃掉后面的查询参数，同样也能返回相同数据
 
 ```
-GET https://www.jisilu.cn/data/etf/etf_list/
+GET /etf/etf_list/
 content-type: application/json
 ```
 
@@ -26,13 +26,13 @@ content-type: application/json
 #### 个股数据
 
 ```
-POST https://www.jisilu.cn/data/etf/detail_hists/?___jsl=LST___t=1691118617015
+POST /etf/detail_hists/?___jsl=LST___t=1691118617015
 ```
 
 同上，也可弃用查询参数。本调用为POST，需提交formdata数据，经验证，只需提供`fund_id`(基金代码)和`is_search`(固定为1)参数即可。
 
 ```
-POST https://www.jisilu.cn/data/etf/detail_hists/ HTTP/1.1
+POST /etf/detail_hists/ HTTP/1.1
 Content-Type: application/x-www-form-urlencoded
 
 fund_id=588080
@@ -44,7 +44,7 @@ fund_id=588080
 ### 黄金ETF
 
 ```
-GET https://www.jisilu.cn/data/etf/gold_list/?___jsl=LST___t=1691117175419&rp=25&page=1
+GET /etf/gold_list/?___jsl=LST___t=1691117175419&rp=25&page=1
 ```
 
 [返回数据样例](./etf-2-Response.json)
@@ -52,11 +52,11 @@ GET https://www.jisilu.cn/data/etf/gold_list/?___jsl=LST___t=1691117175419&rp=25
 #### 个股数据
 
 ```
-POST https://www.jisilu.cn/data/etf/detail_hists/?___jsl=LST___t=1691121670210
+POST /etf/detail_hists/?___jsl=LST___t=1691121670210
 ```
 
 ```
-POST https://www.jisilu.cn/data/etf/detail_hists/ HTTP/1.1
+POST /etf/detail_hists/ HTTP/1.1
 Content-Type: application/x-www-form-urlencoded
 
 fund_id=159812
@@ -71,7 +71,7 @@ ETF类个股API是一样的，只是用不同代码调用而已。
 ### 场内货币ETF
 
 ```
-GET https://www.jisilu.cn/data/etf/money_list/?___jsl=LST___t=1691117212543&rp=25&page=1
+GET /etf/money_list/?___jsl=LST___t=1691117212543&rp=25&page=1
 ```
 
 [返回数据样例](./etf-3-Response.json)
@@ -82,7 +82,7 @@ GET https://www.jisilu.cn/data/etf/money_list/?___jsl=LST___t=1691117212543&rp=2
 ### 欧美市场指数
 
 ```
-GET https://www.jisilu.cn/data/qdii/qdii_list/E?___jsl=LST___t=1691117391003&rp=22&page=1
+GET /qdii/qdii_list/E?___jsl=LST___t=1691117391003&rp=22&page=1
 ```
 
 [返回数据样例](./etf-4-Response.json)
@@ -90,11 +90,11 @@ GET https://www.jisilu.cn/data/qdii/qdii_list/E?___jsl=LST___t=1691117391003&rp=
 #### 个股数据
 
 ```
-POST https://www.jisilu.cn/data/qdii/detail_hists/?___jsl=LST___t=1691119783805
+POST /qdii/detail_hists/?___jsl=LST___t=1691119783805
 ```
 
 ```
-POST https://www.jisilu.cn/data/qdii/detail_hists/ HTTP/1.1
+POST /qdii/detail_hists/ HTTP/1.1
 Content-Type: application/x-www-form-urlencoded
 
 fund_id=513030
@@ -111,15 +111,15 @@ fund_id=513030
 这个API可返回全部QDII数据:
 
 ```
-GET https://www.jisilu.cn/data/qdii/qdii_list/
+GET /qdii/qdii_list/
 ```
 
 下列的API分别返回相应的数据：
 
 ```
-GET https://www.jisilu.cn/data/qdii/qdii_list/E #欧美市场指数
-GET https://www.jisilu.cn/data/qdii/qdii_list/C #欧美市场商品
-GET https://www.jisilu.cn/data/qdii/qdii_list/A #亚洲市场指数
+GET /qdii/qdii_list/E #欧美市场指数
+GET /qdii/qdii_list/C #欧美市场商品
+GET /qdii/qdii_list/A #亚洲市场指数
 ```
 
 个股API也是一样的，只是用不同基金代码去调用而已。
@@ -130,7 +130,7 @@ GET https://www.jisilu.cn/data/qdii/qdii_list/A #亚洲市场指数
 ### 股票LOF
 
 ```
-GET https://www.jisilu.cn/data/lof/stock_lof_list/?___jsl=LST___t=1691118392218&rp=25&page=1
+GET /lof/stock_lof_list/?___jsl=LST___t=1691118392218&rp=25&page=1
 ```
 
 
@@ -140,7 +140,7 @@ GET https://www.jisilu.cn/data/lof/stock_lof_list/?___jsl=LST___t=1691118392218&
 #### 个股数据
 
 ```
-POST https://www.jisilu.cn/data/lof/hist_list/160106?___jsl=LST___t=1691124065852
+POST /lof/hist_list/160106?___jsl=LST___t=1691124065852
 ```
 
 [返回数据样例](./lof-1d-Response.json)
@@ -148,7 +148,7 @@ POST https://www.jisilu.cn/data/lof/hist_list/160106?___jsl=LST___t=169112406585
 ### 指数LOF
 
 ```
-GET https://www.jisilu.cn/data/lof/index_lof_list/?___jsl=LST___t=1691118375870&rp=25&page=1
+GET /lof/index_lof_list/?___jsl=LST___t=1691118375870&rp=25&page=1
 ```
 
 [返回数据样例](./lof-2-Response.json)
@@ -156,7 +156,7 @@ GET https://www.jisilu.cn/data/lof/index_lof_list/?___jsl=LST___t=1691118375870&
 #### 个股数据
 
 ```
-POST https://www.jisilu.cn/data/lof/hist_list/161121?___jsl=LST___t=1691124637352
+POST /lof/hist_list/161121?___jsl=LST___t=1691124637352
 ```
 
 LOF类个股API是一样的，只是用不同代码调用而已。

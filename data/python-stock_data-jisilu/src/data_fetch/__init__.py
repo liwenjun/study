@@ -7,14 +7,17 @@
 
 __author__ = "李文军"
 __email__ = "liwenjun@21cn.cn"
-__version__ = "1.0.0"
 
 
 from .api import (
     get_etf,
+    get_etf_gold,
     get_etf_detail,
-    get_qdii,
+    get_qdii_e,
+    get_qdii_c,
+    get_qdii_a,
     get_qdii_detail,
-    get_lof,
+    get_lof_s,
+    get_lof_i,
     get_lof_detail,
 )
