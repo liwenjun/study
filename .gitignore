@@ -1,5 +1,6 @@
 # Commons
 **/*.exe
+**/*.bak
 
 # Rust
 **/debug/
@@ -17,6 +18,8 @@
 **/__pycache__/
 **/poetry.lock
 **/.ipynb_checkpoints/
+**/dist/*.tar.gz
+**/dist/*.whl
 
 # Nodejs
 **/node_modules/

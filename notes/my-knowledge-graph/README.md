@@ -5,7 +5,7 @@
 ## 安装工具
 
 ```bash
-cargo install mdbook
+cargo install mdbook mdbook-mermaid
 ```
 
 下载安装 [`Python3`](https://www.python.org/downloads/)
