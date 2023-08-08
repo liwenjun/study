@@ -84,7 +84,6 @@ def get_etf_detail(fund: str, keys: tuple = None) -> list:
         r["fund_id"] = fund
         return r
 
-    # res = map(lambda d: {key: d["cell"][key] for key in set(keys)}, ds)
     res = map(lba, ds)
     return list(res)
 
@@ -149,30 +148,7 @@ def get_qdii_detail(fund: str, keys: tuple = None) -> list:
     """获取t+0 qdii基金个股明细数据
 
     参数fund: 基金代码，例: '588080'
-    参数keys: 过滤输出结果字段，例: ()
-
-    参考: 这是返回结果其中一个片段的完整信息, json格式。
-    ```json
-        {
-            "id": "2023-08-03",
-            "cell": {
-                "fund_id": "513030",
-                "price_dt": "2023-08-03",        -- 价格日期
-                "price": "1.234",                -- 收盘价
-                "net_value_dt": "2023-08-02",    -- 净值日期
-                "net_value": "1.2400",           -- 净值
-                "est_val_dt": "2023-08-02",      -- 估值日期
-                "est_val": "1.2401",             -- 估值
-                "est_val_increase_rt": "-1.03",
-                "est_error_rt": "0.01",          -- 估值误差%
-                "discount_rt": "-0.48",          -- 溢价率%
-                "amount": 40628,                 -- 场内份额(万份)
-                "amount_incr": 200,              -- 场内份额变化(万份)
-                "amount_increase_rt": "0.490",
-                "ref_increase_rt": "-1.36"       -- 指数涨幅%
-            }
-        }
-    ```
+    参数keys: 过滤输出结果字段
     """
     default_keys = (
         "fund_id",  # 基金代码

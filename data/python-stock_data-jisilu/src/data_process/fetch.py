@@ -10,201 +10,281 @@ from tqdm import tqdm
 from data_fetch import (
     get_etf,
     get_etf_detail,
-    get_lof,
+    get_etf_gold,
     get_lof_detail,
-    get_qdii,
+    get_lof_i,
+    get_lof_s,
+    get_qdii_a,
+    get_qdii_c,
     get_qdii_detail,
+    get_qdii_e,
 )
 
 logger = logging.getLogger(__name__)
 
 
+def _save2sqlite3_(data: list, datad: list, sql: str, sqld: str, db: str = None):
+    """存储数据到本地数据库
+
+    参数: data - 待保存列表数据。
+    参数: datad - 待保存明细数据。
+    参数: sql - 保存列表数据sql语句。
+    参数: sqld - 保存明细数据sql语句。
+    参数: db - 数据库名，可缺省。
+    """
+    defaultDB = "data.sqlite"
+
+    if db is None:
+        db = defaultDB
+
+    with sqlite3.connect(db) as conn:
+        with closing(conn.cursor()) as cur:
+            cur.executemany(sql, data)
+            print("写入 %d 行列表数据" % (cur.rowcount,))
+            cur.executemany(sqld, datad)
+            print("写入 %d 行明细数据" % (cur.rowcount,))
+            # conn.commit()
+
+
 def fetch_etf():
     """获取etf数据"""
-    SQL = """INSERT INTO etf (
-                    fund_id,
-                    fund_nm,
-                    index_nm,
-                    issuer_nm,
-                    amount,
-                    unit_total,
-                    unit_incr,
-                    volume,
-                    idx_price_dt
-                )
-                VALUES (
-                    :fund_id,
-                    :fund_nm,
-                    :index_nm,
-                    :issuer_nm,
-                    :amount,
-                    :unit_total,
-                    :unit_incr,
-                    :volume,
-                    :idx_price_dt
-                )
-            ON CONFLICT DO UPDATE SET
-                amount = :amount,
-                unit_total = :unit_total,
-                unit_incr = :unit_incr,
-                volume = :volume,
-                idx_price_dt = :idx_price_dt
-    """
-    SQLd = """INSERT INTO etf_detail (
-                           fund_id,
-                           hist_dt,
-                           amount,
-                           amount_incr,
-                           idx_incr_rt,
-                           fund_nav,
-                           trade_price
-                       )
-                       VALUES (
-                           :fund_id,
-                           :hist_dt,
-                           :amount,
-                           :amount_incr,
-                           :idx_incr_rt,
-                           :fund_nav,
-                           :trade_price
-                       )
-                    ON CONFLICT DO UPDATE SET
-                        amount = :amount,
-                        amount_incr = :amount_incr,
-                        idx_incr_rt = :idx_incr_rt,
-                        fund_nav = :fund_nav,
-                        trade_price = :trade_price
-    """
-    SQLa = """INSERT INTO etf_detail (
-                           fund_id,
-                           hist_dt,
-                           unit_total,
-                           unit_incr,
-                           volume
-                       )
-                       VALUES (
-                           :fund_id,
-                           :idx_price_dt,
-                           :unit_total,
-                           :unit_incr,
-                           :volume
-                       )
-                    ON CONFLICT DO UPDATE SET
-                        unit_total = :unit_total,
-                        unit_incr = :unit_incr,
-                        volume = :volume
-    """
-    DB = "data.sqlite"
-    (ids, data) = get_etf()
-    dat = reduce(
-        lambda x, id: x + get_etf_detail(id), tqdm(ids[:10], desc="抓取etf数据"), []
-    )
 
-    with sqlite3.connect(DB) as conn:
-        with closing(conn.cursor()) as cur:
-            cur.executemany(SQL, data)
-            print("写入 %d 行etf数据" % (cur.rowcount,))
-            cur.executemany(SQLd, dat)
-            print("写入 %d 行etf明细数据" % (cur.rowcount,))
-            fdata = filter(lambda d: d['idx_price_dt'] is not None, data)
-            cur.executemany(SQLa, fdata)
-            print("更新 %d 行etf明细数据" % (cur.rowcount,))
-            # conn.commit()
+    (ids1, data1) = get_etf()
+    (ids2, data2) = get_etf_gold()
+
+    ids = ids1 + ids2
+    dat = reduce(lambda x, id: x + get_etf_detail(id), tqdm(ids, desc="抓取etf数据"), [])
+    for x in dat:
+        x["idx_incr_rt"] = (
+            x["idx_incr_rt"].removesuffix("%") if x["idx_incr_rt"] is not None else "-"
+        )
+        x["discount_rt"] = (
+            x["discount_rt"].removesuffix("%") if x["discount_rt"] is not None else "-"
+        )
+
+    for x in data1:
+        x["fund_type"] = "ei"
+    for x in data2:
+        x["fund_type"] = "eg"
+    data = data1 + data2
+
+    nd = data[0]["nav_dt"]
+    dat = list(filter(lambda x: x["hist_dt"] <= nd, dat))
+
+    SQL = """INSERT INTO fund (
+                fund_id,
+                fund_name,
+                index_name,
+                issuer_name,
+                fund_type,
+                fund_nav,
+                fund_nav_date,
+                price,
+                amount,
+                volume,
+                total,
+                idx_incr_rt
+            )
+            VALUES (
+                :fund_id,
+                :fund_nm,
+                :index_nm,
+                :issuer_nm,
+                :fund_type,
+                :fund_nav,
+                :nav_dt,
+                :price,
+                :amount,
+                :volume,
+                :unit_total,
+                :index_increase_rt
+            )
+            ON CONFLICT DO UPDATE SET
+                fund_nav = :fund_nav,
+                fund_nav_date = :nav_dt,
+                price = :price,
+                amount = :amount,
+                volume = :volume,
+                total = :unit_total,
+                idx_incr_rt = :index_increase_rt
+    """
+    SQLd = """INSERT INTO fund_detail (
+                fund_id,
+                fund_date,
+                price,
+                fund_nav,
+                amount,
+                amount_incr,
+                idx_incr_rt,
+                discount_rt
+            )
+            VALUES (
+                :fund_id,
+                :hist_dt,
+                :trade_price,
+                :fund_nav,
+                :amount,
+                :amount_incr,
+                :idx_incr_rt,
+                :discount_rt
+            )
+            ON CONFLICT DO NOTHING
+    """
+    _save2sqlite3_(data, dat, SQL, SQLd)
 
 
 def fetch_qdii():
     """获取qdii数据"""
-    SQL = """INSERT INTO qdii (
-                     fund_id,
-                     fund_nm,
-                     index_nm,
-                     issuer_nm,
-                     qtype,
-                     amount,
-                     volume,
-                     stock_volume,
-                     price_dt
-                 )
-                 VALUES (
-                     :fund_id,
-                     :fund_nm,
-                     :index_nm,
-                     :issuer_nm,
-                     :qtype,
-                     :amount,
-                     :volume,
-                     :stock_volume,
-                     :price_dt
-                 )
+    (idse, datae) = get_qdii_e()
+    (idsc, datac) = get_qdii_c()
+    (idsa, dataa) = get_qdii_a()
+
+    ids = idsa + idsc + idse
+    dat = reduce(lambda x, id: x + get_qdii_detail(id), tqdm(ids, desc="抓取qdii数据"), [])
+
+    for x in dataa:
+        x["fund_type"] = "qa"
+    for x in datac:
+        x["fund_type"] = "qc"
+    for x in datae:
+        x["fund_type"] = "qe"
+    data = dataa + datac + datae
+    for x in data:
+        x["ref_increase_rt"] = (
+            x["ref_increase_rt"].removesuffix("%")
+            if x["ref_increase_rt"] is not None
+            else "-"
+        )
+
+    SQL = """INSERT INTO fund (
+                fund_id,
+                fund_name,
+                index_name,
+                issuer_name,
+                fund_type,
+                fund_nav,
+                fund_nav_date,
+                price,
+                amount,
+                volume,
+                idx_incr_rt
+            )
+            VALUES (
+                :fund_id,
+                :fund_nm,
+                :index_nm,
+                :issuer_nm,
+                :fund_type,
+                :fund_nav,
+                :nav_dt,
+                :price,
+                :amount,
+                :volume,
+                :ref_increase_rt
+            )
             ON CONFLICT DO UPDATE SET
+                fund_nav = :fund_nav,
+                fund_nav_date = :nav_dt,
+                price = :price,
                 amount = :amount,
                 volume = :volume,
-                stock_volume = :stock_volume,
-                price_dt = :price_dt
+                idx_incr_rt = :ref_increase_rt
     """
-    SQLd = """INSERT INTO qdii_detail (
-                            fund_id,
-                            price_dt,
-                            price,
-                            net_value_dt,
-                            net_value,
-                            discount_rt,
-                            amount,
-                            amount_incr,
-                            ref_increase_rt
-                        )
-                        VALUES (
-                            :fund_id,
-                            :price_dt,
-                            :price,
-                            :net_value_dt,
-                            :net_value,
-                            :discount_rt,
-                            :amount,
-                            :amount_incr,
-                            :ref_increase_rt
-                        )
-                    ON CONFLICT DO UPDATE SET
-                        price = :price,
-                        net_value_dt = :net_value_dt,
-                        net_value = :net_value,
-                        discount_rt = :discount_rt,
-                        amount = :amount,
-                        amount_incr = :amount_incr,
-                        ref_increase_rt = :ref_increase_rt
+    SQLd = """INSERT INTO fund_detail (
+                fund_id,
+                fund_date,
+                price,
+                fund_nav,
+                amount,
+                amount_incr,
+                idx_incr_rt,
+                discount_rt
+            )
+            VALUES (
+                :fund_id,
+                :price_dt,
+                :price,
+                :net_value,
+                :amount,
+                :amount_incr,
+                :ref_increase_rt,
+                :discount_rt
+            )
+            ON CONFLICT DO NOTHING
     """
-    SQLa = """INSERT INTO qdii_detail (
-                            fund_id,
-                            price_dt,
-                            volume,
-                            stock_volume
-                        )
-                        VALUES (
-                            :fund_id,
-                            :price_dt,
-                            :volume,
-                            :stock_volume
-                        )
-                    ON CONFLICT DO UPDATE SET
-                        volume = :volume,
-                        stock_volume = :stock_volume
-    """
-    DB = "data.sqlite"
-    (ids, data) = get_qdii()
-    dat = reduce(
-        lambda x, id: x + get_qdii_detail(id), tqdm(ids[:10], desc="抓取qdii数据"), []
-    )
-
-    with sqlite3.connect(DB, isolation_level=None) as conn:
-        with closing(conn.cursor()) as cur:
-            cur.executemany(SQL, data)
-            print("写入 %d 行qdii数据" % (cur.rowcount,))
-            cur.executemany(SQLd, dat)
-            print("写入 %d 行qdii明细数据" % (cur.rowcount,))
-            cur.executemany(SQLa, data)
-            print("更新 %d 行qdii明细数据" % (cur.rowcount,))
-            # conn.commit()
+    _save2sqlite3_(data, dat, SQL, SQLd)
 
 
 def fetch_lof():
     """获取lof数据"""
+    (idsi, datai) = get_lof_i()
+    (idss, datas) = get_lof_s()
+
+    ids = idsi + idss
+    dat = reduce(lambda x, id: x + get_lof_detail(id), tqdm(ids, desc="抓取lof数据"), [])
+
+    for x in datai:
+        x["fund_type"] = "li"
+    for x in datas:
+        x["fund_type"] = "ls"
+        x["index_increase_rt"] = x["stock_increase_rt"]
+        x["index_nm"] = "-"
+    data = datai + datas
+
+    SQL = """INSERT INTO fund (
+                fund_id,
+                fund_name,
+                index_name,
+                issuer_name,
+                fund_type,
+                fund_nav,
+                fund_nav_date,
+                price,
+                amount,
+                volume,
+                idx_incr_rt
+            )
+            VALUES (
+                :fund_id,
+                :fund_nm,
+                :index_nm,
+                :issuer_nm,
+                :fund_type,
+                :fund_nav,
+                :nav_dt,
+                :price,
+                :amount,
+                :volume,
+                :index_increase_rt
+            )
+            ON CONFLICT DO UPDATE SET
+                fund_nav = :fund_nav,
+                fund_nav_date = :nav_dt,
+                price = :price,
+                amount = :amount,
+                volume = :volume,
+                idx_incr_rt = :index_increase_rt
+    """
+    SQLd = """INSERT INTO fund_detail (
+                fund_id,
+                fund_date,
+                price,
+                fund_nav,
+                amount,
+                amount_incr,
+                idx_incr_rt,
+                discount_rt
+            )
+            VALUES (
+                :fund_id,
+                :price_dt,
+                :price,
+                :net_value,
+                :amount,
+                :amount_incr,
+                :ref_increase_rt,
+                :discount_rt
+            )
+            ON CONFLICT DO NOTHING
+    """
+    _save2sqlite3_(data, dat, SQL, SQLd)

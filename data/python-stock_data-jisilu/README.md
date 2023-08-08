@@ -13,7 +13,7 @@
 # 查看帮助信息
 poetry run sdj_cli -- -h
 
-# 抓取股票数据, 建议收盘后执行。
+# 抓取股票数据, 建议收盘后执行(推荐次日早晨，早于8:00)。
 poetry run sdj_cli -- fetch
 ```
 

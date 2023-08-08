@@ -19,8 +19,4 @@ class FetchCommand(Command):
     def handle(self):
         fetch_etf()
         fetch_qdii()
-
-        if self.option("show"):
-            """显示"""
-            # logger.info("%s" % (data,))
-            # print(ids)
+        fetch_lof()
