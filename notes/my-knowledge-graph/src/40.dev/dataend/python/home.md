@@ -6,3 +6,8 @@
 
 这是开发过程中常用的[软件包列表](./packages/home.md)。
 
+
+
+专题学习列表
+
+- `pandas` - [数据分析工具](./pandas/home.md)
