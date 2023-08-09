@@ -4,6 +4,7 @@ import logging
 import sqlite3
 from contextlib import closing
 from functools import reduce
+from multiprocessing.pool import Pool
 
 from tqdm import tqdm
 
@@ -22,6 +23,9 @@ from data_fetch import (
 
 logger = logging.getLogger(__name__)
 
+# 进程数
+PNUM = 60
+
 
 def _save2sqlite3_(data: list, datad: list, sql: str, sqld: str, db: str = None):
     """存储数据到本地数据库
@@ -32,7 +36,7 @@ def _save2sqlite3_(data: list, datad: list, sql: str, sqld: str, db: str = None)
     参数: sqld - 保存明细数据sql语句。
     参数: db - 数据库名，可缺省。
     """
-    defaultDB = "data.sqlite"
+    defaultDB = "./data/fund.sqlite"
 
     if db is None:
         db = defaultDB
@@ -46,13 +50,289 @@ def _save2sqlite3_(data: list, datad: list, sql: str, sqld: str, db: str = None)
             # conn.commit()
 
 
+def _mp_fetch_etf_() -> (list, list):
+    (ids1, data1) = get_etf()
+    (ids2, data2) = get_etf_gold()
+
+    for x in data1:
+        x["fund_type"] = "ei"
+    for x in data2:
+        x["fund_type"] = "eg"
+    data = data1 + data2
+    ids = ids1 + ids2
+
+    # 改进为多进程并行处理，缩减耗时。
+    p = Pool(processes=PNUM)
+    # dat = p.map(lambda x: get_etf_detail(x),tqdm(ids, desc="抓取etf数据"))
+    dat = p.map(get_etf_detail, tqdm(ids, desc="抓取etf数据"))
+    p.close()
+    p.join()
+    dat = reduce(lambda x, y: x + y, dat)
+
+    nd = data[0]["nav_dt"]
+    dat = list(filter(lambda x: x["hist_dt"] <= nd, dat))
+
+    for x in dat:
+        x["idx_incr_rt"] = (
+            x["idx_incr_rt"].removesuffix("%") if x["idx_incr_rt"] is not None else "-"
+        )
+        x["discount_rt"] = (
+            x["discount_rt"].removesuffix("%") if x["discount_rt"] is not None else "-"
+        )
+
+    return (data, dat)
+
+
 def fetch_etf():
+    """获取etf数据"""
+    SQL = """INSERT INTO fund (
+                fund_id,
+                fund_name,
+                index_name,
+                issuer_name,
+                fund_type,
+                fund_nav,
+                fund_nav_date,
+                price,
+                amount,
+                volume,
+                total,
+                idx_incr_rt
+            )
+            VALUES (
+                :fund_id,
+                :fund_nm,
+                :index_nm,
+                :issuer_nm,
+                :fund_type,
+                :fund_nav,
+                :nav_dt,
+                :price,
+                :amount,
+                :volume,
+                :unit_total,
+                :index_increase_rt
+            )
+            ON CONFLICT DO UPDATE SET
+                fund_nav = :fund_nav,
+                fund_nav_date = :nav_dt,
+                price = :price,
+                amount = :amount,
+                volume = :volume,
+                total = :unit_total,
+                idx_incr_rt = :index_increase_rt
+    """
+    SQLd = """INSERT INTO fund_detail (
+                fund_id,
+                fund_date,
+                price,
+                fund_nav,
+                amount,
+                amount_incr,
+                idx_incr_rt,
+                discount_rt
+            )
+            VALUES (
+                :fund_id,
+                :hist_dt,
+                :trade_price,
+                :fund_nav,
+                :amount,
+                :amount_incr,
+                :idx_incr_rt,
+                :discount_rt
+            )
+            ON CONFLICT DO NOTHING
+    """
+    (data, dat) = _mp_fetch_etf_()
+    _save2sqlite3_(data, dat, SQL, SQLd)
+
+
+def _mp_fetch_qdii_():
+    """获取qdii数据"""
+    (idse, datae) = get_qdii_e()
+    (idsc, datac) = get_qdii_c()
+    (idsa, dataa) = get_qdii_a()
+
+    ids = idsa + idsc + idse
+    # 改进为多进程并行处理，缩减耗时。
+    p = Pool(processes=PNUM)
+    dat = p.map(get_qdii_detail, tqdm(ids, desc="抓取qdii数据"))
+    p.close()
+    p.join()
+    dat = reduce(lambda x, y: x + y, dat)
+
+    for x in dataa:
+        x["fund_type"] = "qa"
+    for x in datac:
+        x["fund_type"] = "qc"
+    for x in datae:
+        x["fund_type"] = "qe"
+    data = dataa + datac + datae
+    for x in data:
+        x["ref_increase_rt"] = (
+            x["ref_increase_rt"].removesuffix("%")
+            if x["ref_increase_rt"] is not None
+            else "-"
+        )
+    return (data, dat)
+
+
+def fetch_qdii():
+    """获取qdii数据"""
+    SQL = """INSERT INTO fund (
+                fund_id,
+                fund_name,
+                index_name,
+                issuer_name,
+                fund_type,
+                fund_nav,
+                fund_nav_date,
+                price,
+                amount,
+                volume,
+                idx_incr_rt
+            )
+            VALUES (
+                :fund_id,
+                :fund_nm,
+                :index_nm,
+                :issuer_nm,
+                :fund_type,
+                :fund_nav,
+                :nav_dt,
+                :price,
+                :amount,
+                :volume,
+                :ref_increase_rt
+            )
+            ON CONFLICT DO UPDATE SET
+                fund_nav = :fund_nav,
+                fund_nav_date = :nav_dt,
+                price = :price,
+                amount = :amount,
+                volume = :volume,
+                idx_incr_rt = :ref_increase_rt
+    """
+    SQLd = """INSERT INTO fund_detail (
+                fund_id,
+                fund_date,
+                price,
+                fund_nav,
+                amount,
+                amount_incr,
+                idx_incr_rt,
+                discount_rt
+            )
+            VALUES (
+                :fund_id,
+                :price_dt,
+                :price,
+                :net_value,
+                :amount,
+                :amount_incr,
+                :ref_increase_rt,
+                :discount_rt
+            )
+            ON CONFLICT DO NOTHING
+    """
+    (data, dat) = _mp_fetch_qdii_()
+    _save2sqlite3_(data, dat, SQL, SQLd)
+
+
+def _mp_fetch_lof_():
+    """获取lof数据"""
+    (idsi, datai) = get_lof_i()
+    (idss, datas) = get_lof_s()
+
+    ids = idsi + idss
+    # 改进为多进程并行处理，缩减耗时。
+    p = Pool(processes=PNUM)
+    dat = p.map(get_lof_detail, tqdm(ids, desc="抓取lof数据"))
+    p.close()
+    p.join()
+    dat = reduce(lambda x, y: x + y, dat)
+
+    for x in datai:
+        x["fund_type"] = "li"
+    for x in datas:
+        x["fund_type"] = "ls"
+        x["index_increase_rt"] = x["stock_increase_rt"]
+        x["index_nm"] = "-"
+    data = datai + datas
+
+    return (data, dat)
+
+
+def fetch_lof():
+    """获取lof数据"""
+    SQL = """INSERT INTO fund (
+                fund_id,
+                fund_name,
+                index_name,
+                issuer_name,
+                fund_type,
+                fund_nav,
+                fund_nav_date,
+                price,
+                amount,
+                volume,
+                idx_incr_rt
+            )
+            VALUES (
+                :fund_id,
+                :fund_nm,
+                :index_nm,
+                :issuer_nm,
+                :fund_type,
+                :fund_nav,
+                :nav_dt,
+                :price,
+                :amount,
+                :volume,
+                :index_increase_rt
+            )
+            ON CONFLICT DO UPDATE SET
+                fund_nav = :fund_nav,
+                fund_nav_date = :nav_dt,
+                price = :price,
+                amount = :amount,
+                volume = :volume,
+                idx_incr_rt = :index_increase_rt
+    """
+    SQLd = """INSERT INTO fund_detail (
+                fund_id,
+                fund_date,
+                price,
+                fund_nav,
+                amount,
+                amount_incr,
+                idx_incr_rt,
+                discount_rt
+            )
+            VALUES (
+                :fund_id,
+                :price_dt,
+                :price,
+                :net_value,
+                :amount,
+                :amount_incr,
+                :ref_increase_rt,
+                :discount_rt
+            )
+            ON CONFLICT DO NOTHING
+    """
+    (data, dat) = _mp_fetch_lof_()
+    _save2sqlite3_(data, dat, SQL, SQLd)
+
+
+def fetch_etf_v1():
     """获取etf数据"""
 
     (ids1, data1) = get_etf()
     (ids2, data2) = get_etf_gold()
-
     ids = ids1 + ids2
+
     dat = reduce(lambda x, id: x + get_etf_detail(id), tqdm(ids, desc="抓取etf数据"), [])
     for x in dat:
         x["idx_incr_rt"] = (
@@ -133,7 +413,7 @@ def fetch_etf():
     _save2sqlite3_(data, dat, SQL, SQLd)
 
 
-def fetch_qdii():
+def fetch_qdii_v1():
     """获取qdii数据"""
     (idse, datae) = get_qdii_e()
     (idsc, datac) = get_qdii_c()
@@ -215,7 +495,7 @@ def fetch_qdii():
     _save2sqlite3_(data, dat, SQL, SQLd)
 
 
-def fetch_lof():
+def fetch_lof_v1():
     """获取lof数据"""
     (idsi, datai) = get_lof_i()
     (idss, datas) = get_lof_s()
