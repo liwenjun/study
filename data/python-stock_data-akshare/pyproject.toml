@@ -1,26 +1,33 @@
 [tool.poetry]
-name = "jupyter-study-env"
+name = "python-stock-data-akshare"
 version = "0.1.0"
-description = ""
-authors = ["liwenjun <liwenjun@21cn.com>"]
+description = "股票数据抓取与处理"
+authors = ["李文军 <liwenjun@21cn.com>"]
 readme = "README.md"
-packages = [{include = "jupyter_study_env"}]
+packages = [
+    {include = "sd_core", from = "src"},
+    {include = "sd_cli", from = "src"},
+    {include = "sd_web", from = "src"},
+]
 
 [tool.poetry.dependencies]
 python = "^3.11"
 akshare = "^1.10.79"
-
+tqdm = "^4.66.0"
+cleo = "^2.0.1"
 
 [[tool.poetry.source]]
 name = "aliyun"
 url = "https://mirrors.aliyun.com/pypi/simple/"
 priority = "default"
 
-
 [tool.poetry.group.dev.dependencies]
-jupyter = "^1.0.0"
-jupyterlab = "^4.0.3"
+jupyterlab = "^4.0.4"
 jupyterlab-language-pack-zh-cn = "^4.0.post1"
+
+[tool.poetry.scripts]
+sd_cli = "sd_cli.cli:main"
+# sd_web = "sd_web.cli:main"
 
 [build-system]
 requires = ["poetry-core"]
