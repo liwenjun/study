@@ -4,11 +4,20 @@ import datetime
 import logging
 import sqlite3
 from contextlib import closing
+from functools import reduce
+from multiprocessing.pool import Pool
 
 import akshare as ak
 import pandas as pd
+from tqdm import tqdm
 
 logger = logging.getLogger(__name__)
+
+
+# 进程数
+PNUM = 60
+
+defaultDB = "./data/data.sqlite"
 
 
 def _save2sqlite3_(data: list, datad: list, sql: str, sqld: str, db: str = None):
@@ -20,7 +29,6 @@ def _save2sqlite3_(data: list, datad: list, sql: str, sqld: str, db: str = None)
     参数: sqld - 保存明细数据sql语句。
     参数: db - 数据库名，可缺省。
     """
-    defaultDB = "./data/data.sqlite"
 
     if db is None:
         db = defaultDB
@@ -97,8 +105,32 @@ def get_stock_daily(symbol, start=None):
     return df
 
 
+def _get_symbol_latest_day_(db=None):
+    sql = """SELECT 代码, max(日期) as 最近日期
+                FROM fund_daily
+                GROUP BY 代码;
+    """
+    if db is None:
+        db = defaultDB
+
+    with sqlite3.connect(db) as conn:
+        df = pd.read_sql(sql, conn)
+
+    return df
+
+
 def fetch_stock():
     """获取stock数据"""
+    data = get_stock_list()
+    print(data.info())
+    ids = data["证券代码"].tolist()
+
+    p = Pool(processes=PNUM)
+    dat = p.map(get_stock_daily, tqdm(ids, desc="抓取stock数据"))
+    p.close()
+    p.join()
+    dat = reduce(lambda x, y: pd.concat([x, y], ignore_index=True), dat)
+
     SQL = """INSERT INTO stock (
                     证券代码,
                     证券简称,
@@ -145,11 +177,9 @@ def fetch_stock():
                 )
                 ON CONFLICT DO NOTHING
     """
-    data = get_stock_list().to_dict(orient="records")
-    # df.to_dict(orient="records")
-    dat = get_stock_daily("300159", "20230101").to_dict(orient="records")
-
-    _save2sqlite3_(data, dat, SQL, SQLd)
+    _save2sqlite3_(
+        data.to_dict(orient="records"), dat.to_dict(orient="records"), SQL, SQLd
+    )
 
 
 def get_etf_daily(symbol, start=None):

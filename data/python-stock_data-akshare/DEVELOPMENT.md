@@ -21,7 +21,7 @@ poetry source add --priority=default aliyun https://mirrors.aliyun.com/pypi/simp
 
 # 添加依赖包
 poetry add akshare tqdm cleo
-poetry add pandas matplotlib plotly
+poetry add matplotlib plotly
 
 # 添加开发依赖包
 poetry add -D jupyterlab-language-pack-zh-CN
@@ -36,9 +36,9 @@ poetry run jupyter-lab -- notebook
 
 将代码按功能进行分包，统一组织在 `src` 目录下。
 
-- data_fetch - 数据抓取功能包
-- data_process - 数据处理功能包
-- data_presentation - 数据展现功能包
+- sd_core - 核心功能包
+- sd_cli - 命令行工具包
+- sd_web - web服务包
 
 
 

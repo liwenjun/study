@@ -1,5 +1,8 @@
 # 股票数据抓取与处理
 
+停更！！！
+请转到 [新项目 - python-stock_data-akshare](../python-stock_data-akshare/README.md)
+
 ## 预期目标
 
 通过抓取[集思录](https://www.jisilu.cn/)网站实时数据，本地存储后，进行加工处理，最终以图形化方式展示所需信息。

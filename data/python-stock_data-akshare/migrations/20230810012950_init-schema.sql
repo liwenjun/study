@@ -43,7 +43,7 @@ CREATE TABLE fund(
    昨收     NUMERIC,
    换手率   NUMERIC,
    流通市值 INTEGER,
-   总市值   INTEGER
+   总市值   INTEGER,
    CONSTRAINT fund_pk PRIMARY KEY (代码)
 );
 
