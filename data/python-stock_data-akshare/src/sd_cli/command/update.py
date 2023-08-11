@@ -5,13 +5,20 @@ import logging
 from cleo.commands.command import Command
 from cleo.helpers import argument, option
 
-from sd_core import fetch_etf, fetch_stock_fund
+from sd_core import (
+    update_etf_list,
+    update_etf_daily,
+    update_fund_daily,
+    update_fund_list,
+    update_stock_daily,
+    update_stock_list,
+)
 
 logger = logging.getLogger(__name__)
 
 
-class FetchCommand(Command):
-    name = "fetch"
+class UpdateCommand(Command):
+    name = "update"
     description = "抓取股票数据"
     arguments = [
         argument("target", description="指定需要抓取的数据, 可用值：etf/stock/all", optional=False)
@@ -33,11 +40,19 @@ class FetchCommand(Command):
 
         match target.lower():
             case "etf":
-                fetch_etf()
+                update_etf_list()
+                update_etf_daily()
             case "stock":
-                fetch_stock_fund()
+                update_fund_list()
+                update_fund_daily()
+                update_stock_list()
+                update_stock_daily()
             case "all":
-                fetch_etf()
-                fetch_stock_fund()
+                update_etf_list()
+                update_etf_daily()
+                update_fund_list()
+                update_fund_daily()
+                update_stock_list()
+                update_stock_daily()
             case _:
                 self.line("记录日志")

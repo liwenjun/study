@@ -3,7 +3,7 @@
 import logging
 import sys
 from cleo.application import Application
-from .command import FetchCommand
+from .command import FetchCommand, UpdateCommand
 
 
 logger = logging.getLogger(__name__)
@@ -19,9 +19,7 @@ def main():
         level=logging.INFO,
     )
 
-    cmds = [
-        FetchCommand(),
-    ]
+    cmds = [FetchCommand(), UpdateCommand()]
 
     name = "Stock_Data_Jisilu-cli"
     version = "1.0"
