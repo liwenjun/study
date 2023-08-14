@@ -16,6 +16,7 @@ logger = logging.getLogger(__name__)
 
 # 进程数
 PNUM = 6
+TMAX = 500
 
 defaultDB = "./data/data.sqlite"
 
@@ -262,24 +263,30 @@ def _update_fund_lof_daily_one(ids):
 
 def update_fund_daily():
     """更新fund日数据"""
+    logger.info("更新fund-etf日数据")
     ids = _get_fund_ids("ETF")
-    for x in split_list_by_n(ids, 50):
+    for x in split_list_by_n(ids, TMAX):
         _update_fund_etf_daily_one(x)
 
+    logger.info("更新fund-lof日数据")
     ids = _get_fund_ids("LOF")
-    for x in split_list_by_n(ids, 50):
+    for x in split_list_by_n(ids, TMAX):
         _update_fund_lof_daily_one(x)
 
 
 def update_stock_daily():
     """更新stock日数据"""
     ids = _get_stock_ids()
-    for x in split_list_by_n(ids, 50):
+    i = 0
+    for x in split_list_by_n(ids, TMAX):
+        logger.info("更新Stock日数据 - %d" % (i,))
+        i = i + 1
         _update_stock_daily_one(x)
 
 
 def update_fund_list():
     """更新fund列表数据"""
+    logger.info("更新fund列表数据")
     Flist = [_get_fund_etf, _get_fund_lof]
     data = map(lambda x: x(), tqdm(Flist))
     data = pd.concat(data, ignore_index=True)
@@ -305,6 +312,7 @@ def update_fund_list():
 
 def update_stock_list():
     """更新stock列表数据"""
+    logger.info("更新stock列表数据")
     Flist = [_get_sh_kc, _get_sh_zb, _get_sz, _get_bj]
     data = map(lambda x: x(), tqdm(Flist))
     data = pd.concat(data, ignore_index=True)
@@ -330,6 +338,7 @@ def update_stock_list():
 
 def update_etf_list():
     """更新etf列表数据"""
+    logger.info("更新etf列表数据")
     data = _get_etf()
 
     SQL = """INSERT INTO etf (
@@ -349,97 +358,10 @@ def update_etf_list():
 
 def update_etf_daily():
     """更新fund日数据"""
+    logger.info("更新etf日数据")
     ids = _get_etf_ids()
-    for x in split_list_by_n(ids, 50):
+    for x in split_list_by_n(ids, TMAX):
         _update_etf_daily_one(x)
-
-
-# ===================================
-
-
-def fetch_etf():
-    """获取etf净值数据"""
-    df = _get_etf()
-    ids = _merge_etf_ids(df)
-    # logger.debug(ids[:3])
-    p = Pool(processes=PNUM)
-    dat = p.map(_get_etf_netvalue, tqdm(ids, desc="抓取ETF基金净值数据"))
-    p.close()
-    p.join()
-    dat = pd.concat(dat, ignore_index=True)
-    _save_etf(df, dat)
-
-
-def fetch_stock_fund():
-    """获取stock数据"""
-    FDlist = [
-        # (func_list, func_daily, func_save, desc)
-        (_get_sh_kc, _get_stock_daily, _save_stock, "抓取上证科创板数据"),
-        (_get_sh_zb, _get_stock_daily, _save_stock, "抓取上证主板数据"),
-        (_get_sz, _get_stock_daily, _save_stock, "抓取深证数据"),
-        (_get_bj, _get_stock_daily, _save_stock, "抓取北证数据"),
-        (_get_fund_etf, _get_etf_daily, _save_fund, "抓取ETF基金数据"),
-        (_get_fund_lof, _get_lof_daily, _save_fund, "抓取LOF基金数据"),
-    ]
-    for f in FDlist:
-        _fetch_one(f)
-
-
-def _save_etf(dlist, daily):
-    """保存etf数据"""
-    SQL = """INSERT INTO etf (
-                    基金代码,
-                    基金简称,
-                    类型
-                )
-                VALUES (
-                    :基金代码,
-                    :基金简称,
-                    :类型
-                )
-                ON CONFLICT DO NOTHING
-    """
-    SQLd = """INSERT INTO etf_netvalue (
-                    基金代码,
-                    净值日期,
-                    单位净值,
-                    累计净值,
-                    日增长率
-                )
-                VALUES (
-                    :基金代码,
-                    :净值日期,
-                    :单位净值,
-                    :累计净值,
-                    :日增长率
-                )
-                ON CONFLICT DO NOTHING
-    """
-    _save2sqlite3_(
-        dlist.to_dict(orient="records"), daily.to_dict(orient="records"), SQL, SQLd
-    )
-
-
-def _save2sqlite3_(data: list, datad: list, sql: str, sqld: str, db: str = None):
-    """存储数据到本地数据库
-
-    参数: data - 待保存列表数据。
-    参数: datad - 待保存明细数据。
-    参数: sql - 保存列表数据sql语句。
-    参数: sqld - 保存明细数据sql语句。
-    参数: db - 数据库名，可缺省。
-    """
-
-    if db is None:
-        db = defaultDB
-
-    with sqlite3.connect(db) as conn:
-        with closing(conn.cursor()) as cur:
-            cur.executemany(sql, data)
-            print("写入 %d 行列表数据" % (cur.rowcount,))
-            cur.executemany(sqld, datad)
-            print("写入 %d 行明细数据" % (cur.rowcount,))
-            # conn.commit()
 
 
 def _get_stock_daily(p):

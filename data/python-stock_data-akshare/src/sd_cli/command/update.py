@@ -25,9 +25,9 @@ class UpdateCommand(Command):
     ]
     options = [
         option(
-            "log",
+            "list",
             "l",
-            description="记录日志",
+            description="更新列数据",
             flag=True,
         )
     ]
@@ -36,23 +36,19 @@ class UpdateCommand(Command):
         target = self.argument("target")
 
         if self.option("log"):
-            self.line("记录日志")
+            update_etf_list()
+            update_fund_list()
+            update_stock_list()
 
         match target.lower():
             case "etf":
-                update_etf_list()
                 update_etf_daily()
             case "stock":
-                update_fund_list()
                 update_fund_daily()
-                update_stock_list()
                 update_stock_daily()
             case "all":
-                update_etf_list()
                 update_etf_daily()
-                update_fund_list()
                 update_fund_daily()
-                update_stock_list()
                 update_stock_daily()
             case _:
                 self.line("记录日志")
