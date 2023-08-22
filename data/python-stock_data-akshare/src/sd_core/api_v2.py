@@ -2,8 +2,8 @@
 
 import datetime
 import logging
-import math
 import sqlite3
+from datetime import timedelta
 from contextlib import closing
 from multiprocessing.pool import Pool
 
@@ -38,6 +38,9 @@ def _get_latest_day(sql, db=None):
     with sqlite3.connect(db) as conn:
         df = pd.read_sql(sql, conn)
 
+    # TODO 日期+1，推迟一天。
+    ds = pd.to_datetime(df["最近日期"], format="%Y-%m-%d", errors="ignore")
+    df["最近日期"] = (ds + timedelta(days=1)).dt.strftime("%Y%m%d")
     return df
 
 
@@ -52,7 +55,7 @@ def _get_etf_ids():
     df = df.where(df.notnull(), None)
     ids = df.apply(lambda x: tuple(x), axis=1).values.tolist()
     ids = list(
-        map(lambda x: (x[0], None if x[1] is None else x[1].replace("-", "")), ids)
+        map(lambda x: (x[0], None if x[1] is None else x[1]), ids)
     )
 
     return ids
@@ -72,7 +75,7 @@ def _get_fund_ids(item):
     df = df.where(df.notnull(), None)
     ids = df.apply(lambda x: tuple(x), axis=1).values.tolist()
     ids = list(
-        map(lambda x: (x[0], None if x[1] is None else x[1].replace("-", "")), ids)
+        map(lambda x: (x[0], None if x[1] is None else x[1]), ids)
     )
 
     return ids
@@ -89,7 +92,7 @@ def _get_stock_ids():
     df = df.where(df.notnull(), None)
     ids = df.apply(lambda x: tuple(x), axis=1).values.tolist()
     ids = list(
-        map(lambda x: (x[0], None if x[1] is None else x[1].replace("-", "")), ids)
+        map(lambda x: (x[0], None if x[1] is None else x[1]), ids)
     )
 
     return ids

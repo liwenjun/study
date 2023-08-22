@@ -35,7 +35,7 @@ class UpdateCommand(Command):
     def handle(self):
         target = self.argument("target")
 
-        if self.option("log"):
+        if self.option("list"):
             update_etf_list()
             update_fund_list()
             update_stock_list()

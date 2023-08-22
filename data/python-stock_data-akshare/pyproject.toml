@@ -16,6 +16,7 @@ akshare = "^1.10.79"
 tqdm = "^4.66.0"
 cleo = "^2.0.1"
 flask = "^2.3.2"
+matplotlib = "^3.7.2"
 
 [[tool.poetry.source]]
 name = "aliyun"

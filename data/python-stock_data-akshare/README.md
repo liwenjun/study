@@ -9,6 +9,6 @@ poetry run sd_cli -- -h
 poetry run sd_web -- -h
 
 # 抓取股票数据, 建议收盘后执行
-poetry run sd_cli -- fetch
+poetry run sd_cli -- update
 ```
 
