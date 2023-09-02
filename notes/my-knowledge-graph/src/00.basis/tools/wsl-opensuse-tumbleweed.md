@@ -102,7 +102,7 @@ cargo install sqlx-cli --no-default-features -F postgres,native-tls,sqlite
 cargo install diesel_cli --no-default-features --features "postgres sqlite"
 
 # cargo install https ripgrep
-cargo install mdbook
+cargo install mdbook mdbook-mermaid
 cargo install cargo-edit
 cargo install microserver
 
@@ -137,7 +137,42 @@ npx elm-tooling tools
 npx elm-tooling install
 ```
 
-### 配置 vscode 运行环境
+
+
+## 配置 haskell 
+
+```
+# sudo zypper install gmp make ncurses realpath xz-utils
+sudo zypper install gmp-devel
+
+curl --proto '=https' --tlsv1.2 -sSf https://mirrors.ustc.edu.cn/ghcup/sh/bootstrap-haskell | BOOTSTRAP_HASKELL_YAML=https://mirrors.ustc.edu.cn/ghcup/ghcup-metadata/ghcup-0.0.7.yaml sh
+```
+
+修改 ~/.cabal/config
+
+```
+repository mirrors.tuna.tsinghua.edu.cn
+  url: http://mirrors.tuna.tsinghua.edu.cn/hackage
+  secure: True
+
+-- repository hackage.haskell.org
+--   url: http://hackage.haskell.org/
+```
+
+修改 ~/.ghcup/config.conf, 在末尾加上
+
+```
+url-source:
+    OwnSource: https://mirrors.ustc.edu.cn/ghcup/ghcup-metadata/ghcup-0.0.7.yaml 
+```
+
+
+
+
+
+
+
+## 配置 vscode 运行环境
 
 ```bash
 code .
@@ -150,7 +185,7 @@ code .
 #
 ```
 
-### 缓存开发包
+## 缓存开发包
 
 1. 缓存 elm 开发项目依赖包
 1. python开发项目 poetry install
