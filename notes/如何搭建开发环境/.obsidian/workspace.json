@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "将外网机的开发环境移植到内网.md",
+                "file": "内网搭建简易pypi服务.md",
                 "mode": "source",
                 "source": false
               }
@@ -85,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "将外网机的开发环境移植到内网.md",
+                "file": "内网搭建简易pypi服务.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "将外网机的开发环境移植到内网.md",
+                "file": "内网搭建简易pypi服务.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -125,7 +125,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "将外网机的开发环境移植到内网.md"
+                "file": "内网搭建简易pypi服务.md"
               }
             }
           }
@@ -148,12 +148,13 @@
   },
   "active": "bb1e4e802d08072b",
   "lastOpenFiles": [
+    "将外网机的开发环境移植到内网.md",
+    "内网搭建简易pypi服务.md",
     "-=索引=-.md",
+    "Oracle客户端配置.md",
     "基于scoop搭建Windows开发环境.md",
     "基于Docker Desktop提供服务组件.md",
-    "Oracle客户端配置.md",
     "双机系统的Linux开发环境.md",
-    "将外网机的开发环境移植到内网.md",
     "基于wsl2搭建Linux开发环境.md",
     "postgresql常见命令及操作.md"
   ]

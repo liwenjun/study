@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "程序员能力矩阵 Programmer Competency Matrix.md",
+                "file": "Alpine on WSL2 学习笔记.md",
                 "mode": "source",
                 "source": false
               }
@@ -85,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "程序员能力矩阵 Programmer Competency Matrix.md",
+                "file": "Alpine on WSL2 学习笔记.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "程序员能力矩阵 Programmer Competency Matrix.md",
+                "file": "Alpine on WSL2 学习笔记.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -125,7 +125,17 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "程序员能力矩阵 Programmer Competency Matrix.md"
+                "file": "Alpine on WSL2 学习笔记.md"
+              }
+            }
+          },
+          {
+            "id": "3c854a09f2b154aa",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency"
               }
             }
           }
@@ -146,10 +156,10 @@
       "command-palette:打开命令面板": false
     }
   },
-  "active": "52dfbe55396aef87",
+  "active": "c88a6ef312f04672",
   "lastOpenFiles": [
-    "docker-compose.yml 配置文件全面指南.md",
     "程序员能力矩阵 Programmer Competency Matrix.md",
+    "docker-compose.yml 配置文件全面指南.md",
     "Alpine on WSL2 学习笔记.md",
     "超详细的 Vagrant 上手指南.md",
     "assets",
