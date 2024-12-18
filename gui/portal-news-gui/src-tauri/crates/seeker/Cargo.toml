@@ -1,0 +1,17 @@
+[package]
+name = "seeker"
+version = "0.1.0"
+edition = "2021"
+
+
+[dependencies]
+anyhow = "1"
+config = "0.13"
+regex = "1"
+scraper = "0.16"
+serde = { version = "1", features = ["derive"] }
+thiserror = "1"
+url = "2"
+
+# ureq = { version = "2", features = ["json", "charset"] }
+ureq = { path = "ureq", features = ["json", "charset"]  }

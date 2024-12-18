@@ -1,0 +1,19 @@
+[[section]]
+name = "公司要闻"
+key = "xx公司"
+url = "/main/subject/8/ArticleList8_{}.html"
+number = 20
+
+[[section]]
+name = "基层动态"
+key = "xx公司"
+url = "/main/subject/1082/ArticleList1082_{}.html"
+number = 20
+
+[click]
+url = "/util/Count1.jsp"
+key = "acId"
+# 点击间隔(毫秒)
+interval = 50
+# 点击次数
+count = 100

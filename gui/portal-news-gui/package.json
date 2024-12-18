@@ -1,0 +1,20 @@
+{
+  "name": "webseeker-gui",
+  "author": "liwenjun",
+  "description": "门户新闻采集工具",
+  "version": "1.0.0",
+  "license": "MIT",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview",
+    "lint": "elm-review",
+    "test": "elm-test-rs"
+  },
+  "devDependencies": {
+  },
+  "dependencies": {
+    "@cityssm/bulma-sticky-table": "^2",
+    "@tauri-apps/api": "^1"
+  }
+}
