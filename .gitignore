@@ -27,7 +27,7 @@
 
 # mdbook
 notes/**/book
-notes/**/src/SUMMARY.md
+# notes/**/src/SUMMARY.md
 
 # Sqlite
 **/*.sqlite*
