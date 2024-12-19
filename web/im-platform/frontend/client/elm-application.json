@@ -1,0 +1,12 @@
+{
+  "name": "Lee/elm-chat-client",
+  "summary": "Chat 客户端",
+  "version": "1.0.0",
+  "exposed-modules": [
+    "Api",
+    "Api.Users",
+    "View",
+    "Ports",
+    "Websocket"
+  ]
+}

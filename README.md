@@ -11,15 +11,11 @@
 - `notes` - [学习笔记](./notes/README.md)
 - `web` - [`web`后端服务](./web/README.md)
 
-
-
 [我的知识图谱](./notes/my-knowledge-graph/src/home.md)
-
-
 
 ## `git`首次提交建议
 
-```
+```bash
 echo "# study" >> README.md
 git init
 git add README.md
@@ -28,4 +24,3 @@ git branch -M main
 git remote add origin https://github.com/liwenjun/study.git
 git push -u origin main
 ```
-

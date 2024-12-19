@@ -1,0 +1,43 @@
+{
+  "build": {
+    "beforeDevCommand": "elm-land server",
+    "beforeBuildCommand": "elm-land build",
+    "devPath": "http://localhost:1234",
+    "distDir": "../dist",
+    "withGlobalTauri": false
+  },
+  "package": {
+    "productName": "admin",
+    "version": "1.0.0"
+  },
+  "tauri": {
+    "allowlist": {
+      "all": false,
+      "shell": {
+        "all": false,
+        "open": true
+      }
+    },
+    "bundle": {
+      "active": false,
+      "targets": "all",
+      "identifier": "im-platform-admin",
+      "icon": [
+        "icons/32x32.png",
+        "icons/128x128.png"
+      ]
+    },
+    "security": {
+      "csp": null
+    },
+    "windows": [
+      {
+        "fullscreen": false,
+        "resizable": true,
+        "title": "交流平台管理端",
+        "width": 800,
+        "height": 600
+      }
+    ]
+  }
+}

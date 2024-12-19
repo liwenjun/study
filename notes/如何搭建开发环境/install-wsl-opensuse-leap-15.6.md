@@ -2,14 +2,12 @@
 
 > 2024-12-09  以下安装软件版本均为此日期时的最新版本
 
-
-
 ```bash
 # 在线查看可用 wsl 包
 wsl --list --online
 ```
 
-```
+```bash
 NAME                            FRIENDLY NAME
 Ubuntu                          Ubuntu
 Debian                          Debian GNU/Linux
@@ -67,6 +65,7 @@ sudo chmod 0440 /etc/sudoers.d/lee
 # 解析git地址 
 sudo vi /etc/hosts
 ```
+
 ```
 # 在末尾加上下列4行
 185.199.108.133 raw.githubusercontent.com
@@ -88,12 +87,6 @@ index-url = https://pypi.tuna.tsinghua.edu.cn/simple
 trusted-host = https://pypi.tuna.tsinghua.edu.cn
 EOF
 ```
-
-
-
-
-
-
 
 ```bash
 # 安装中文字体
@@ -134,8 +127,6 @@ WantedBy=sysinit.target
 systemctl enable wslg
 ```
 
-
-
 ## [`WSL`中的高级设置配置](https://learn.microsoft.com/zh-cn/windows/wsl/wsl-config)
 
 ```bash
@@ -159,15 +150,11 @@ swap=8GB
 localhostforwarding=true
 ```
 
-
-
 ## 加装附加磁盘
 
 1、按 Win + R 组合键，打开运行，在运行窗口中输入：`compmgmt.msc` 命令，确定或回车，打开磁盘管理器；
 
 2、打开存储\磁盘管理，右键点击”磁盘管理“，选择”`创建VHD`“，虚拟硬盘格式选择”`VHDX`“，其他自己设置，然后点”确定“；
-
-
 
 ```bash
 # 当前版本
@@ -252,7 +239,6 @@ sudo chmod 777 /mnt/source
 sudo mount /dev/sdd1 /mnt/source
 ```
 
-
 ```bash
 # 自动挂载
 # 查询磁盘UUID
@@ -279,9 +265,7 @@ UUID=4689e18c-ce1c-48a0-810f-22ca518fd73b /mnt/workspace ext4 defaults 0 0
 UUID=9e01ce95-5e99-4fa1-92ef-f0c2b091916d /mnt/source ext4 defaults 0 0
 ```
 
-
-
-### 挂载 vhdx 
+### 挂载 vhdx
 
 ```bash
 # 创建自动任务挂载 vhdx
@@ -303,8 +287,6 @@ wsl --mount --vhd D:\Dev\wsl2_dev\source.vhdx --bare
 # 在操作中添加前面创建的脚本
 ```
 
-
-
 ## 设置符号链接
 
 ```bash
@@ -322,8 +304,6 @@ ln -s /mnt/workspace/dev+base/.elm
 ln -s /mnt/workspace/dev+base/.cargo
 ```
 
-
-
 ## 安装基础开发包
 
 ```bash
@@ -332,19 +312,17 @@ sudo zypper up
 
 # 
 sudo zypper install git nano \
-	libopenssl-devel \
-	libffi-devel \
-	gcc gcc-c++ \
-	sqlite3-devel
-	
+ libopenssl-devel \
+ libffi-devel \
+ gcc gcc-c++ \
+ sqlite3-devel
+ 
 #sudo zypper install python3-devel postgresql-devel 
 
 # 配置 git
 git config --global user.email "14991386@qq.com"
 git config --global user.name "liwejun"
 ```
-
-
 
 ## 安装 postgresql
 
@@ -369,8 +347,6 @@ sudo service postgresql status
 # 启停操作
 sudo service postgresql start|stop|restart
 ```
-
-
 
 ### 管理配置 postgresql
 
@@ -485,8 +461,6 @@ PS> wsl -- hostname -I
 ## 172.27.144.57
 ```
 
-
-
 ## 配置 elm 开发工具
 
 ```bash
@@ -535,8 +509,6 @@ volta install elm-doc-preview
 volta install elm-review elm-test elm-watch elm-land npm-check-updates
 ```
 
-
-
 ## 配置 python 学习环境
 
 ```bash
@@ -554,8 +526,6 @@ sudo apt install python3-venv python3-dev
 # 安装 poetry 1.8.5
 curl -sSL https://install.python-poetry.org | python3 -
 ```
-
-
 
 ## 配置 rust 开发环境
 
@@ -618,8 +588,6 @@ registry = "https://code.aliyun.com/rustcc/crates.io-index.git"
 EOF
 ```
 
-
-
 ### 安装常用工具
 
 ```
@@ -630,8 +598,6 @@ cargo install diesel_cli --no-default-features --features "postgres sqlite"
 # cargo install ripgrep
 # cargo install mdbook mdbook-mermaid
 ```
-
-
 
 ### tauri 开发支持
 
@@ -655,8 +621,6 @@ cargo create-tauri-app
 cd tauri-app
 cargo tauri dev
 ```
-
-
 
 ### tauri + android 支持
 
@@ -694,8 +658,6 @@ export NDK_HOME="$ANDROID_HOME/ndk/$(ls -1 $ANDROID_HOME/ndk)"
 rustup target add aarch64-linux-android armv7-linux-androideabi i686-linux-android x86_64-linux-android
 ```
 
-
-
 ## Haskell
 
 ```bash
@@ -706,20 +668,18 @@ sudo apt install ghc cabal-install
 
 # 
 sudo apt install \
-	libffi-dev \
-	libffi8 \
-	libgmp-dev \
-	libgmp10 \
-	libncurses-dev \
-	libncurses5 \
-	libtinfo5 \
-	pkg-config
+ libffi-dev \
+ libffi8 \
+ libgmp-dev \
+ libgmp10 \
+ libncurses-dev \
+ libncurses5 \
+ libtinfo5 \
+ pkg-config
 
 # ghcup
 curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | sh
 ```
-
-
 
 ## 清理
 
@@ -751,8 +711,6 @@ mv /mnt/source/Android .
 sudo mv /mnt/source/android-studio /opt/
 ```
 
-
-
 ## 用户配置
 
 windows下执行：
@@ -762,8 +720,6 @@ windows下执行：
 wslconfig /s openSUSE
 C:\wsl\openSUSE\openSUSE.exe config --default-user lee
 ```
-
-
 
 ## 安装 Microsoft Edge 浏览器
 
@@ -776,8 +732,6 @@ sudo zypper install microsoft-edge-stable
 microsoft-edge --version
 ```
 
-
-
 ## GUI问题诊断
 
 [Diagnosing "cannot open display" type issues](https://github.com/microsoft/wslg/wiki/Diagnosing-"cannot-open-display"-type-issues-with-WSLg)
@@ -787,4 +741,3 @@ cd /tmp
 sudo rm -fr .X11-unix/
 sudo ln -s /mnt/wslg/.X11-unix/
 ```
-

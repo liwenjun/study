@@ -1,0 +1,28 @@
+{
+  "app": {
+    "elm": {
+      "development": { "debugger": true },
+      "production": { "debugger": false }
+    },
+    "env": [ "NODE_ENV" ],
+    "html": {
+      "attributes": {
+        "html": { "lang": "en" },
+        "head": {}
+      },
+      "title": "Chat",
+      "meta": [
+        { "charset": "UTF-8" },
+        { "http-equiv": "X-UA-Compatible", "content": "IE=edge" },
+        { "name": "viewport", "content": "width=device-width, initial-scale=1.0" }
+      ],
+      "link": [
+        { "rel": "icon", "type": "image/icon", "href": "/favicon.ico" }
+      ],
+      "script": []
+    },
+    "router": {
+      "useHashRouting": false
+    }
+  }
+}

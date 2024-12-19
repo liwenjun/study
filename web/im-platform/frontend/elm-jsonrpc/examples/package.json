@@ -1,0 +1,8 @@
+{
+  "name": "elm-jsonrpc-example",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "start": "run-pty % elm-watch hot % microserver -a 127.0.0.1 build"
+  }
+}

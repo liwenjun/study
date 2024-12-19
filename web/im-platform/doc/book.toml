@@ -1,0 +1,9 @@
+[book]
+authors = ["李文军"]
+language = "zh"
+multilingual = false
+src = "src"
+title = "交流平台文档"
+
+[output.html.fold]
+enable = true

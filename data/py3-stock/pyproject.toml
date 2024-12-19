@@ -1,0 +1,52 @@
+[tool.poetry]
+name = "py-stock"
+version = "1.0.0"
+description = "股市数据"
+authors = ["李文军 <liwenjun@jx.sgcc.com.cn>"]
+readme = "README.md"
+
+packages = [
+    { include = "fetch_data", from = "src"},
+    { include = "stock_utils", from = "src"},
+]
+
+classifiers = [
+    "Development Status :: 5 - Product",
+    "Intended Audience :: Developers",
+    "Natural Language :: Chinese",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+]
+
+[tool.poetry.dependencies]
+python = "^3.6.1"
+baostock = "^0.8.8"
+tushare = "^1.2.60"
+numpy = "^1.19.1"
+pandas = "^1.1.1"
+psycopg2-binary = "^2.8.6"
+#mootdx = "^0.6.4"
+pytdx = "^1.72"
+tqdm = "^4.49.0"
+
+[tool.poetry.dev-dependencies]
+wheel = "*"
+pylint = "*"
+yapf = "*"
+jupyterlab = "*"
+matplotlib = "*"
+isort = "*"
+
+[[tool.poetry.source]]
+name = "repo"
+url = "https://mirrors.aliyun.com/pypi/simple"
+default = true
+
+[tool.poetry.scripts] 
+fetch_data = "fetch_data.cli:main"
+
+[build-system]
+requires = ["poetry>=1.0"]
+build-backend = "poetry.masonry.api"

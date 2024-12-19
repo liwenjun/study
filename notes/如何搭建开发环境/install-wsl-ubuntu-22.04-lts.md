@@ -2,14 +2,12 @@
 
 > 2024-12-08  以下安装软件版本均为此日期时的最新版本
 
-
-
 ```bash
 # 在线查看可用 wsl 包
 wsl --list --online
 ```
 
-```
+```bash
 NAME                            FRIENDLY NAME
 Ubuntu                          Ubuntu
 Debian                          Debian GNU/Linux
@@ -31,8 +29,6 @@ openSUSE-Tumbleweed             openSUSE Tumbleweed
 # 安装
 wsl --install --no-launch --web-download --distribution  Ubuntu-22.04
 ```
-
-
 
 ## 基本配置项
 
@@ -111,12 +107,10 @@ sudo apt upgrade
 
 # 安装
 sudo apt install vim nano unzip \
-	build-essential \
-  	libpq-dev libssl-dev libffi-dev \
-  	libsqlite3-dev pkg-config
+ build-essential \
+   libpq-dev libssl-dev libffi-dev \
+   libsqlite3-dev pkg-config
 ```
-
-
 
 ### 配置GUI选项
 
@@ -129,9 +123,6 @@ fc-cache -fv
 # 编辑 /etc/bash.bashrc 在文件末尾加入如下一行命令：
 sudo rm -fr /tmp/.X11-unix && sudo ln -s /mnt/wslg/.X11-unix /tmp/.X11-unix
 ```
-
-
-
 
 ### [调整`WSL`内存使用](https://learn.microsoft.com/zh-cn/windows/wsl/wsl-config)
 
@@ -147,11 +138,7 @@ swap=4GB
 localhostforwarding=true
 ```
 
-
-
 ## 加装附加磁盘
-
-
 
 ### 创建虚拟磁盘
 
@@ -160,9 +147,7 @@ localhostforwarding=true
 - 打开存储\磁盘管理，右键点击”磁盘管理“，选择”`创建 VHD`“，虚拟硬盘格式选择”`VHDX`“，其他自己设置，然后点”确定“；
 - 选择刚才创建的磁盘， 右键点击”`分离 VHD`“
 
-
-
-### 挂载 `vhdx` 
+### 挂载 `vhdx`
 
 ```bash
 # 创建自动任务挂载 vhdx
@@ -250,7 +235,6 @@ sudo chmod 777 /mnt/android
 sudo mount /dev/sde1 /mnt/android
 ```
 
-
 ```bash
 # 自动挂载
 # 查询磁盘UUID
@@ -297,8 +281,6 @@ ln -s /mnt/workspace/dev+base/.rustup
 ln -s /mnt/workspace/dev+base/.vscode-server
 ```
 
-
-
 ## 安装 postgresql
 
 ```bash
@@ -329,8 +311,6 @@ sudo service postgresql status
 # 启停操作
 sudo service postgresql start|stop|restart
 ```
-
-
 
 ### 管理配置 postgresql
 
@@ -447,8 +427,6 @@ PS> wsl -- hostname -I
 ## 172.27.144.57
 ```
 
-
-
 ## 配置 elm 开发工具
 
 ```bash
@@ -497,8 +475,6 @@ volta install elm-doc-preview
 volta install elm-review elm-test elm-watch elm-land npm-check-updates
 ```
 
-
-
 ## 配置 python 学习环境
 
 ```bash
@@ -516,8 +492,6 @@ sudo apt install python3-venv python3-dev
 # 安装 poetry 1.8.5
 curl -sSL https://install.python-poetry.org | python3 -
 ```
-
-
 
 ## 配置 rust 开发环境
 
@@ -580,8 +554,6 @@ registry = "https://code.aliyun.com/rustcc/crates.io-index.git"
 EOF
 ```
 
-
-
 ### 安装常用工具
 
 ```
@@ -592,8 +564,6 @@ cargo install diesel_cli --no-default-features --features "postgres sqlite"
 # cargo install ripgrep
 # cargo install mdbook mdbook-mermaid
 ```
-
-
 
 ### tauri 开发支持
 
@@ -615,8 +585,6 @@ cargo create-tauri-app
 cd tauri-app
 cargo tauri dev
 ```
-
-
 
 ### tauri + android 开发支持
 
@@ -667,12 +635,10 @@ export NDK_HOME="$ANDROID_HOME/ndk/$(ls -1 $ANDROID_HOME/ndk)"
 # Add the Android targets with rustup:
 rustup target add \
     aarch64-linux-android \
-	armv7-linux-androideabi \
-	i686-linux-android \
-	x86_64-linux-android
+ armv7-linux-androideabi \
+ i686-linux-android \
+ x86_64-linux-android
 ```
-
-
 
 ## 配置 Haskell 开发环境
 
@@ -693,14 +659,14 @@ ln -s /mnt/workspace/dev+base/.stack
 ```bash
 # 安装依赖包 
 sudo apt install \
-	libffi-dev \
-	libffi8 \
-	libgmp-dev \
-	libgmp10 \
-	libncurses-dev \
-	libncurses5 \
-	libtinfo5 \
-	pkg-config
+ libffi-dev \
+ libffi8 \
+ libgmp-dev \
+ libgmp10 \
+ libncurses-dev \
+ libncurses5 \
+ libtinfo5 \
+ pkg-config
 
 # ghcup
 curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | sh
@@ -708,8 +674,6 @@ curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | sh
 # 安装 hls
 ghcup tui
 ```
-
-
 
 ## 配置 OCaml 开发环境
 
@@ -732,8 +696,6 @@ opam init
 opam install ocaml-lsp-server odoc ocamlformat utop
 ```
 
-
-
 ## 配置 vscode 运行环境
 
 ```bash
@@ -745,8 +707,6 @@ REST Client
 rust-analyzer
 ...
 ```
-
-
 
 ## 安装 Microsoft Edge 浏览器
 
@@ -770,8 +730,6 @@ sudo apt install microsoft-edge-stable
 microsoft-edge --version
 ```
 
-
-
 ## 清理并导出
 
 ```bash
@@ -789,8 +747,6 @@ wsl --shutdown
 wsl --export Ubuntu-22.04 - | gzip -9 > z:\rootfs.tar.gz
 ```
 
-
-
 ## 用户配置
 
 windows下执行：
@@ -800,4 +756,3 @@ windows下执行：
 wslconfig /s Ubuntu
 C:\wsl\Ubuntu\Ubuntu.exe config --default-user lee
 ```
-

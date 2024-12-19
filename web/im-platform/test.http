@@ -1,0 +1,160 @@
+@url = http://127.0.0.1:8080/api
+@password = "password"
+
+### 检查用户是否已存在
+
+# @prompt checkuser
+POST {{url}} HTTP/1.1
+content-type: application/json
+
+{
+    "jsonrpc": "2.0",
+    "method": "users.check",
+    "auth": null,
+    "params": ["{{checkuser}}"],
+    "id": 1
+}
+
+### 创建新用户
+
+# @prompt username
+# @name user
+POST {{url}} HTTP/1.1
+content-type: application/json
+
+{
+    "jsonrpc": "2.0",
+    "method": "users.create",
+    "auth": null,
+    "params": {"username": "{{username}}", "password": {{password}}},
+    "id": 1
+}
+
+
+### 登录
+
+# @prompt username
+# @name login
+POST {{url}} HTTP/1.1
+content-type: application/json
+
+{
+    "jsonrpc": "2.0",
+    "method": "users.auth",
+    "auth": null,
+    "params": {"username": "{{username}}", "password": {{password}}},
+    "id": 1
+}
+
+
+### 用户信息
+
+@token= {{login.response.body.result.token}}
+
+# @name user
+POST {{url}} HTTP/1.1
+content-type: application/json
+
+{
+    "jsonrpc": "2.0",
+    "method": "users.self",
+    "auth": "{{token}}",
+#    "params": {},
+    "id": 1
+}
+
+
+### 创建群组
+
+@token= {{login.response.body.result.token}}
+
+# @prompt guildname
+# @name guild
+POST {{url}} HTTP/1.1
+content-type: application/json
+
+{
+    "jsonrpc": "2.0",
+    "method": "guilds.create",
+    "auth": "{{token}}",
+    "params": { "name": "{{guildname}}" },
+    "id": 1
+}
+
+
+### 发送消息
+
+@token= {{login.response.body.result.token}}
+@guild_id={{guild.response.body.result.id}}
+
+# @name message
+POST {{url}} HTTP/1.1
+content-type: application/json
+
+{
+    "jsonrpc": "2.0",
+    "method": "guilds.message",
+    "auth": "{{token}}",
+    "params": { "guild_id": "{{guild_id}}", "content": "持久消息", "nonce": "临时消息" },
+    "id": 1
+}
+
+
+### 查询guild
+
+@token= {{login.response.body.result.token}}
+# @name message
+POST {{url}} HTTP/1.1
+content-type: application/json
+
+{
+    "jsonrpc": "2.0",
+    "method": "guilds.fetch",
+    "auth": "{{token}}",
+    "params": ["70849791903289345"],
+    "id": 1
+}
+
+### 查看已加入的群组
+
+GET {{url}}/users/@self/guilds
+content-type: application/json
+authorization: {{token}}
+
+
+### 查看未加入的群组
+
+GET {{url}}/users/@other/guilds
+content-type: application/json
+authorization: {{token}}
+
+### 更新用户在线状态 ONLINE, AWAY, BUSY, OFFLINE
+
+PATCH {{url}}/users/@self/presence HTTP/1.1
+content-type: application/json
+authorization: {{token}}
+
+"AWAY"
+
+
+### 更改用户显示名
+
+PATCH {{url}}/users/@self/display HTTP/1.1
+content-type: application/json
+authorization: {{token}}
+
+
+"新名字"
+
+
+
+### 更改用户所在guild昵称
+
+# @prompt guild_id
+
+PATCH {{url}}/users/@self/{{guild_id}}/nickname HTTP/1.1
+content-type: application/json
+authorization: {{token}}
+
+
+"我的昵称"

@@ -4,7 +4,7 @@
 
 参考指南
 
-```
+```bash
 https://zh.opensuse.org/SDB:%E5%BF%AB%E9%80%9F%E9%85%8D%E7%BD%AE%E6%8C%87%E5%8D%97
 ```
 
@@ -12,13 +12,11 @@ https://zh.opensuse.org/SDB:%E5%BF%AB%E9%80%9F%E9%85%8D%E7%BD%AE%E6%8C%87%E5%8D%
 
 按标准方法安装。设置用户`lee`。
 
-
 如果不需要自动更新，或者不需要 Packagekit 本身，首先可以考虑:
 
-```
+```bash
 sudo zypper rm -u PackageKit
 ```
-
 
 ### 将`/tmp`设置为`tmpfs`文件系统
 
@@ -38,6 +36,7 @@ ln -s /tmp ~/.npm
 # 重启
 sudo reboot
  ```
+
 ### 配置环境
 
 ```bash
@@ -65,7 +64,7 @@ EOF
 
 ### 安装 NVIDIA 驱动源
 
-```
+```bash
 sudo zypper in openSUSE-repos-NVIDIA
 # or
 # sudo zypper addrepo --refresh 'https://download.nvidia.com/opensuse/leap/$releasever' NVIDIA
@@ -74,11 +73,7 @@ sudo zypper in openSUSE-repos-NVIDIA
 # sudo zypper in nvidia-video-G06
 ```
 
-
-
 ## 安装开发包
-
-
 
 ### 基础包
 
@@ -143,8 +138,6 @@ sudo systemctl daemon-reload
 sudo systemctl restart docker
 ```
 
-
-
 ### 配置 python 开发工具
 
 ```bash
@@ -178,8 +171,6 @@ pyenv global 3.12.7
 pyenv uninstall <versions>.
 ```
 
-
-
 ### 配置 elm 开发工具
 
 ```bash
@@ -212,8 +203,6 @@ volta install elm-doc-preview elm-watch
 
 volta install pnpm
 ```
-
-
 
 ### 配置 rust 开发环境
 
@@ -279,8 +268,6 @@ cargo install diesel_cli --no-default-features --features "postgres sqlite"
 # cargo install maturin
 ```
 
-
-
 ### 配置 Haskell
 
 ```bash
@@ -298,16 +285,12 @@ cabal init --interactive
 ghcup tui
 ```
 
-
-
 ## 安装生产力工具
 
 > 以下常用的软件工具，可去这里搜索、下载、安装
     ```
     https://software.opensuse.org/
     ```
-
-
 
 ### Beyond Compare
 
@@ -340,8 +323,6 @@ GXN1eh9FbDiX1ACdd7XKMV7hL7x0ClBJLUJ-zFfKofjaj2yxE53xauIfkqZ8FoLpcZ0Ux6McTyNmODDS
 --- END LICENSE KEY -----
 ```
 
-
-
 ### Typora
 
 ```
@@ -365,15 +346,11 @@ Type=Application
 StartupNotify=true
 ```
 
-
-
 ### KoodoReader
 
 ```
 https://dl.koodoreader.com/v1.5.1/Koodo-Reader-1.5.1.AppImage
 ```
-
-
 
 ### LocalSend
 
@@ -381,17 +358,13 @@ https://dl.koodoreader.com/v1.5.1/Koodo-Reader-1.5.1.AppImage
 https://github.com/localsend/localsend/releases/download/v1.15.4/LocalSend-1.15.4-linux-x86-64.AppImage
 ```
 
-
-
 ### IntelliJ IDEA Community
 
 ```
 https://download-cdn.jetbrains.com.cn/idea/ideaIC-2024.2.3.tar.gz
 ```
 
-
-
-###  Android Studio
+### Android Studio
 
 ```
 https://developer.android.google.cn/studio
@@ -400,19 +373,15 @@ To install Android Studio on Linux, follow these steps:
 
 1. Unpack the .tar.gz to /opt/.
 1.1 For a 64-bit version of Linux, first install the required libraries for 64-bit machines.
-	sudo yum install zlib.i686 ncurses-libs.i686 bzip2-libs.i686
+ sudo yum install zlib.i686 ncurses-libs.i686 bzip2-libs.i686
 2. To launch Android Studio, open a terminal, navigate to the android-studio/bin/ directory, and execute studio.sh.
 ```
 
-
-
-###  Remarkable `md编辑器`
+### Remarkable `md编辑器`
 
 ```
 https://github.com/jamiemcg/remarkable
 ```
-
-
 
 ### vscode
 
@@ -422,8 +391,6 @@ sudo zypper addrepo https://packages.microsoft.com/yumrepos/vscode vscode
 sudo zypper refresh
 sudo zypper install code
 ```
-
-
 
 ### obsidian
 
@@ -445,8 +412,6 @@ Terminal=false
 Type=Application
 StartupNotify=true
 ```
-
-
 
 ### 安装 VirtualBox
 
@@ -474,18 +439,16 @@ sudo /sbin/vboxconfig
 sudo rcvboxdrv setup
 ```
 
-
-
 > Creating group 'vboxusers'. VM users must be member of that group!
 > This system is currently not set up to build kernel modules.
 > Please install the gcc make perl packages from your distribution.
 > Please install the Linux kernel "header" files matching the current kernel
 > for adding new hardware support to the system.
 > The distribution packages containing the headers are probably:
->     kernel-default-devel kernel-default-devel-6.4.0-150600.23.25
+> kernel-default-devel kernel-default-devel-6.4.0-150600.23.25
 
 > There were problems setting up VirtualBox.  To re-start the set-up process, run
->   /sbin/vboxconfig
+> /sbin/vboxconfig
 > as root.  If your system is using EFI Secure Boot you may need to sign the
 > kernel modules (vboxdrv, vboxnetflt, vboxnetadp, vboxpci) before you can load
 > them. Please see your Linux system's documentation for more information.
@@ -496,11 +459,11 @@ sudo rcvboxdrv setup
 > vboxdrv.sh: Stopping VirtualBox services.
 > vboxdrv.sh: Starting VirtualBox services.
 > vboxdrv.sh: You must sign these kernel modules before using VirtualBox:
->   vboxdrv vboxnetflt vboxnetadp
+> vboxdrv vboxnetflt vboxnetadp
 > See the documentation for your Linux distribution..
 > vboxdrv.sh: Building VirtualBox kernel modules.
 > vboxdrv.sh: Signing VirtualBox kernel modules.
-> vboxdrv.sh: failed: 
+> vboxdrv.sh: failed:
 
 > System is running in Secure Boot mode, however your distribution
 > does not provide tools for automatic generation of keys needed for
@@ -513,9 +476,7 @@ sudo rcvboxdrv setup
 
 > Restart "rcvboxdrv setup" after system is rebooted
 
-
-#### 重新整理安装openSUSE项目提供的VirtualBox如下 
-
+#### 重新整理安装openSUSE项目提供的VirtualBox如下
 
 1. 安装 Virtualbox
 
@@ -523,7 +484,7 @@ sudo rcvboxdrv setup
 sudo zypper in virtualbox 
 ```
 
-> 如果你是 Leap 用户，并且希望能够使用最新版本的 `virtualbox`， 可前往 http://software.opensuse.org，下载并安装适用于 Leap 的，由社区打包的软件包。
+> 如果你是 Leap 用户，并且希望能够使用最新版本的 `virtualbox`， 可前往 <http://software.opensuse.org，下载并安装适用于> Leap 的，由社区打包的软件包。
 
 加入用户组
 
@@ -535,7 +496,6 @@ sudo usermod -aG vboxusers $USER
 
 然后重启系统。
 
-
 2. 安装扩展包
 
 Extension Pack 扩展包主要提供了 USB 驱动和 3D 加速驱动等因版权无法自由分发的内容。
@@ -544,7 +504,6 @@ Extension Pack 扩展包主要提供了 USB 驱动和 3D 加速驱动等因版�
 
 要安装扩展包，请先打开 VirtualBox，点击左侧 工具栏 上的选项按钮，切换到 扩展 页面，然后再点击上方的 install 安装你刚刚下载保持的扩展包文件，然后你就会看到扩展包的使用许可协议，滚动到底端，然后点击 我同意，即可安装扩展包：
 首次打开 VirtualBox 会提示用户是否启用 USB 功能（这可能会带来安全风险，但是它带来的便利值得这么做），个人建议可以使用该功能。
-
 
 3. 为虚拟机安装增强功能
 
@@ -560,8 +519,7 @@ sudo zypper in virtualbox-guest-tools
 sudo usermod -aG vboxsf $USER
 ```
 
-重新登录系统即可看到你之前设置好的共享文件夹（该共享文件夹一般位于 /media 目录之下，如果你没有看到自动挂载的文件夹，你需要手动将共享文件夹固定到文件浏览器的侧边栏之中）。 
-
+重新登录系统即可看到你之前设置好的共享文件夹（该共享文件夹一般位于 /media 目录之下，如果你没有看到自动挂载的文件夹，你需要手动将共享文件夹固定到文件浏览器的侧边栏之中）。
 
 4. kernal
 
@@ -576,16 +534,9 @@ https://en.opensuse.org/openSUSE:UEFI
 https://en.opensuse.org/SDB:NVIDIA_drivers#Secureboot
 ```
 
-
-
 ## 以下路径可链接到 /tmp
 
 ```
 ~/.cache/mozilla/firefox/efexjfeb.default-release/cache2
 
 ```
-
-
-
-
-

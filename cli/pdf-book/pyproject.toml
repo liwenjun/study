@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "pdf-book"
+version = "0.1.0"
+description = ""
+authors = ["liwenjun <liwenjun@21cn.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+pypdf = "^5.0.0"
+
+[tool.poetry.scripts]
+pbs = 'pdf_book.cli:main'
+
+[[tool.poetry.source]]
+name = "ali"
+url = "https://mirrors.aliyun.com/pypi/simple"
+priority = "primary"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

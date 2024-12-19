@@ -4,7 +4,7 @@
 
 python需要安装下列三个包：
 
-```
+```bash
 beautifulsoup4
 markdownify
 requests

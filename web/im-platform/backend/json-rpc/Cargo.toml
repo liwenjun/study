@@ -1,0 +1,22 @@
+[package]
+name = "jsonrpc"
+version = "1.0.0"
+authors = ["liwenjun"]
+edition = "2021"
+description = "A library suitable for use as the framework for a JSON-RPC server."
+readme = "README.md"
+
+[dependencies]
+bytes = "1.4.0"
+futures = "0.3.28"
+http = "0.2.9"
+itertools = "0.11.0"
+serde = { version = "1", features = ["derive"] }
+serde_json = { version = "1", features = ["preserve_order"] }
+tracing = "0.1.37"
+warp = "0.3.5"
+
+[dev-dependencies]
+env_logger = "0.10.0"
+hyper = "0.14.27"
+tokio = { version = "1", features = ["macros", "rt-multi-thread", "test-util"] }

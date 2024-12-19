@@ -1,0 +1,6 @@
+[workspace]
+members = [
+    "backend/server",
+    "backend/json-rpc",
+    "frontend/admin-client/src-tauri",
+]

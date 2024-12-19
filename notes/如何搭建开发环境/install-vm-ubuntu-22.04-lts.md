@@ -4,8 +4,6 @@
 
 按标准方法安装，选择`Ubuntu Server (minimized)`。设置用户`lee`。
 
-
-
 ## 映射`ssh`端口
 
 在 `Windows` `Powershell` 下执行
@@ -22,8 +20,6 @@ cd 'C:\Program Files\Oracle\VirtualBox\'
 # 将服务器ssh端口22映射到本地2222端口
 .\VBoxManage.exe modifyvm "ubuntu-22.04-lts" --natpf1 "ssh,tcp,,2222,,22"
 ```
-
-
 
 ## `ssh`免密登录
 
@@ -44,8 +40,6 @@ ssh 127.0.0.1 -p 2222
 cd ~/.ssh
 cat id_rsa.pub >> authorized_keys
 ```
-
-
 
 ## 基础配置
 
@@ -98,8 +92,6 @@ GRUB_TIMEOUT=1
 # 重启
 sudo reboot
 ```
-
-
 
 ## 挂载附加硬盘
 
@@ -214,8 +206,6 @@ ln -s /mnt/workspace/dev+base/.rustup
 ln -s /mnt/workspace/dev+base/.vscode-server
 ```
 
-
-
 ## 安装基础开发包
 
 ```bash
@@ -234,8 +224,6 @@ sudo apt install vim nano git unzip \
 git config --global user.email "14991386@qq.com"
 git config --global user.name "liwenjun"
 ```
-
-
 
 ## 安装 postgresql
 
@@ -261,8 +249,6 @@ sudo systemctl status postgresql
 sudo systemctl start|stop|restart postgresql
 # sudo service postgresql start|stop|restart
 ```
-
-
 
 ### 管理配置 postgresql
 
@@ -354,8 +340,6 @@ postgres=# \q
 psql -U dev -d devdb -h localhost
 ```
 
-
-
 ### 将数据库迁移到附加盘
 
 ```bash
@@ -374,8 +358,6 @@ sudo -u postgres mv /var/lib/postgresql/17 /mnt/source/pgsql+data/
 cd /var/lib/postgresql
 sudo -u postgres ln -s /mnt/source/pgsql+data/17
 ```
-
-
 
 ## 配置 elm 开发工具
 
@@ -425,8 +407,6 @@ volta install elm-doc-preview
 volta install elm-review elm-test elm-watch elm-land npm-check-updates
 ```
 
-
-
 ## 配置 python 学习环境
 
 ```bash
@@ -444,8 +424,6 @@ sudo apt install python3-venv python3-dev python3-pip
 # 安装 poetry 1.8.5
 curl -sSL https://install.python-poetry.org | python3 -
 ```
-
-
 
 ## 配置 rust 开发环境
 
@@ -508,8 +486,6 @@ registry = "https://code.aliyun.com/rustcc/crates.io-index.git"
 EOF
 ```
 
-
-
 ### 安装常用工具
 
 ```
@@ -520,8 +496,6 @@ cargo install diesel_cli --no-default-features --features "postgres sqlite"
 # cargo install ripgrep
 # cargo install mdbook mdbook-mermaid
 ```
-
-
 
 ### tauri 开发支持
 
@@ -543,8 +517,6 @@ cargo create-tauri-app
 cd tauri-app
 cargo tauri dev
 ```
-
-
 
 ### tauri + android 开发支持
 
@@ -595,12 +567,10 @@ export NDK_HOME="$ANDROID_HOME/ndk/$(ls -1 $ANDROID_HOME/ndk)"
 # Add the Android targets with rustup:
 rustup target add \
     aarch64-linux-android \
-	armv7-linux-androideabi \
-	i686-linux-android \
-	x86_64-linux-android
+ armv7-linux-androideabi \
+ i686-linux-android \
+ x86_64-linux-android
 ```
-
-
 
 ## 配置 Haskell 开发环境
 
@@ -621,14 +591,14 @@ ln -s /mnt/workspace/dev+base/.stack
 ```bash
 # 安装依赖包 
 sudo apt install \
-	libffi-dev \
-	libffi8 \
-	libgmp-dev \
-	libgmp10 \
-	libncurses-dev \
-	libncurses5 \
-	libtinfo5 \
-	pkg-config
+ libffi-dev \
+ libffi8 \
+ libgmp-dev \
+ libgmp10 \
+ libncurses-dev \
+ libncurses5 \
+ libtinfo5 \
+ pkg-config
 
 # ghcup
 curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | sh
@@ -636,8 +606,6 @@ curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | sh
 # 安装 hls
 ghcup tui
 ```
-
-
 
 ## 配置 OCaml 开发环境
 
@@ -659,9 +627,6 @@ opam init
 #
 opam install ocaml-lsp-server odoc ocamlformat utop
 ```
-
-
-
 
 ## 配置 X Server
 
@@ -697,8 +662,6 @@ xhost +localhost
 
 # sudo systemctl status lightdm.service
 ```
-
-
 
 ## 安装中文字体
 
@@ -750,8 +713,6 @@ fcitx-config-gtk3
 fcitx-configtool
 ```
 
-
-
 ## 安装更多中文字体，包括Windows字体
 
 ```bash
@@ -774,8 +735,6 @@ fc-cache -fv
 fc-list :lang=zh
 ```
 
-
-
 ## 安装 Microsoft Edge 浏览器
 
 ```bash
@@ -797,8 +756,6 @@ sudo apt install microsoft-edge-stable
 # 显示版本
 microsoft-edge --version
 ```
-
-
 
 ## 安装 `Typora`
 
@@ -825,9 +782,6 @@ mv ~/.config/Typora/xfi03lCYzY /mnt/workspace/dev+base/Typora-linux-x64/
 ln -s /mnt/workspace/dev+base/Typora-linux-x64/xfi03lCYzY /tmp/xfi03lCYzY
 ```
 
-
-
-
 ## 配置 `vscode` 开发环境
 
 ### `ssh`远程开发免密登录
@@ -842,8 +796,6 @@ Host ubuntu
     IdentityFile "C:\Users\lee\.ssh\id_rsa"
 ```
 
-
-
 ### 安装插件
 
 ```bash
@@ -856,10 +808,6 @@ code .
 # REST Client
 # rust-analyser
 ```
-
-
-
-
 
 ## 删除旧内核
 
@@ -881,8 +829,6 @@ dpkg --list | grep linux-image
 ```
 sudo apt autoremove --purge
 ```
-
-
 
 ### 方法 2：手动删除 Ubuntu 多余内核
 
@@ -920,8 +866,6 @@ sudo update-grub
 
 6. 重新启动 Ubuntu 系统。
 
-
-
 ## 清理
 
 ```bash
@@ -933,8 +877,6 @@ sudo rm -rf /var/log/*
 rm -fr ~/.bash_history
 ```
 
-
-
 ## 备份数据
 
 ```bash
@@ -943,4 +885,3 @@ rm -fr ~/.bash_history
 7z a -mx9 z:\android.7z C:\wsl\android.vhd
 7z a -mx9 z:\workspace.7z C:\wsl\workspace.vhd
 ```
-
