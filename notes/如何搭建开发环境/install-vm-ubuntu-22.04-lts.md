@@ -2,7 +2,7 @@
 
 > 2024-12-18  以下安装软件版本均为此日期时的最新版本
 
-按标准方法安装，选择`Ubuntu Server (minimized)`。设置用户`lee`。
+按标准方法安装，选择 `Ubuntu Server (minimized)`。设置用户 `lee`。记得勾选 `openssh-server` 安装选项。
 
 ## 映射`ssh`端口
 
@@ -34,11 +34,14 @@ ssh-keygen -t rsa
 # 上传自己的公钥到服务器
 cd C:\Users\lee\.ssh
 scp -P 2222 id_rsa.pub lee@localhost:~/.ssh  
+scp -P 2222 id_rsa lee@localhost:~/.ssh  
       
 # 通过其他方式登录服务器后，再进行如下操作）
 ssh 127.0.0.1 -p 2222
 cd ~/.ssh
 cat id_rsa.pub >> authorized_keys
+chmod 400 id_rsa
+chmod 644 id_rsa.pub
 ```
 
 ## 基础配置
@@ -58,6 +61,9 @@ ln -s /tmp ~/.cache
 rm -fr ~/.npm/
 ln -s /tmp ~/.npm
 
+sudo rm -fr /var/tmp
+sudo ln -s /tmp /var/tmp
+
 # 为 npm 配置国内源
 echo 'registry=https://registry.npmmirror.com' >> ~/.npmrc
 
@@ -73,11 +79,8 @@ index-url = https://pypi.tuna.tsinghua.edu.cn/simple
 trusted-host = https://pypi.tuna.tsinghua.edu.cn
 EOF
 
-# 删除 snapd
-sudo apt autoremove --purge snapd
-
-# 删除 packagekit
-sudo apt autoremove --purge packagekit
+# 删除 snapd packagekit
+sudo apt autoremove --purge snapd packagekit
 
 # 解析git地址 
 echo "185.199.108.133 raw.githubusercontent.com" | sudo tee -a /etc/hosts
@@ -88,6 +91,10 @@ echo "185.199.111.133 raw.githubusercontent.com" | sudo tee -a /etc/hosts
 # 调整开机grub等待时长
 sudo nano /etc/default/grub
 GRUB_TIMEOUT=1
+GRUB_RECORDFAIL_TIMEOUT=1
+
+# 刷新生效
+sudo update-grub
 
 # 重启
 sudo reboot
@@ -102,22 +109,13 @@ lsblk
 
 显示如下信息
 
-```
+```bash
 NAME                      MAJ:MIN RM  SIZE RO TYPE MOUNTPOINTS
-sda                         8:0    0   15G  0 disk
-├─sda1                      8:1    0    1M  0 part
-├─sda2                      8:2    0  1.8G  0 part /boot
-└─sda3                      8:3    0 13.2G  0 part
-  └─ubuntu--vg-ubuntu--lv 253:0    0   10G  0 lvm  /
 sdb                         8:16   0   64G  0 disk
 sdc                         8:32   0   48G  0 disk
 sdd                         8:48   0   24G  0 disk
-sr0                        11:0    1 1024M  0 rom
-```
 
-可见 `sdb`、`sdc`、`sdd` 是新挂载的磁盘
-
-```
+# 可见 `sdb`、`sdc`、`sdd` 是新挂载的磁盘
 sdb -> workspace    64GB
 sdc -> source       48GB
 sdd -> android      24GB
@@ -136,18 +134,12 @@ sudo fdisk /dev/sdd
 lsblk
 
 NAME                      MAJ:MIN RM  SIZE RO TYPE MOUNTPOINTS
-sda                         8:0    0   15G  0 disk
-├─sda1                      8:1    0    1M  0 part
-├─sda2                      8:2    0  1.8G  0 part /boot
-└─sda3                      8:3    0 13.2G  0 part
-  └─ubuntu--vg-ubuntu--lv 253:0    0   10G  0 lvm  /
 sdb                         8:16   0   64G  0 disk
 └─sdb1                      8:17   0   64G  0 part
 sdc                         8:32   0   48G  0 disk
 └─sdc1                      8:33   0   48G  0 part
 sdd                         8:48   0   24G  0 disk
 └─sdd1                      8:49   0   24G  0 part
-sr0                        11:0    1 1024M  0 rom
 ```
 
 ```bash
@@ -161,18 +153,9 @@ sudo mkfs.ext4 /dev/sdd1
 # 查询磁盘UUID
 sudo blkid
 
-/dev/mapper/ubuntu--vg-ubuntu--lv: UUID="62a5b692-8061-4816-ae32-ce4ef375429b" BLOCK_SIZE="4096" TYPE="ext4"
-/dev/sda2: UUID="bf2b57f6-afeb-433d-997c-24216d66b544" BLOCK_SIZE="4096" TYPE="ext4" PARTUUID="0b4c0a8c-2389-468b-8562-67dc7f322f0a"
-/dev/sda3: UUID="lXeBSl-LhZ2-Jeqf-X3dn-bz37-a9yb-r7RkcD" TYPE="LVM2_member" PARTUUID="7b3d7122-435f-446f-869c-cffe042ce72a"
-/dev/sdd1: UUID="3bdf95e1-1a04-4abf-9544-a1e10c172975" BLOCK_SIZE="4096" TYPE="ext4" PARTUUID="6a0ce7a9-01"
-/dev/sdb1: UUID="d8938301-9f46-4103-8fbc-a0476ec4326f" BLOCK_SIZE="4096" TYPE="ext4" PARTUUID="3b1dc21f-01"
-/dev/sdc1: UUID="94b212e6-93c5-429e-9679-0918e4314dff" BLOCK_SIZE="4096" TYPE="ext4" PARTUUID="7fb8bca8-01"
-/dev/sda1: PARTUUID="9c143786-a262-45b2-b54e-62da8c9abba5"
-
-# 可以看到UUID为
-sdb1 = d8938301-9f46-4103-8fbc-a0476ec4326f
-sdc1 = 94b212e6-93c5-429e-9679-0918e4314dff
-sdd1 = 3bdf95e1-1a04-4abf-9544-a1e10c172975
+/dev/sdb1: UUID="d8938301-9f46-4103-8fbc-a0476ec4326f"
+/dev/sdc1: UUID="94b212e6-93c5-429e-9679-0918e4314dff"
+/dev/sdd1: UUID="3bdf95e1-1a04-4abf-9544-a1e10c172975"
 ```
 
 ```bash
@@ -184,6 +167,10 @@ echo "UUID=3bdf95e1-1a04-4abf-9544-a1e10c172975 /mnt/android ext4 defaults 0 0" 
 
 # 重启
 sudo reboot
+
+sudo chown lee:lee /mnt/workspace
+sudo chown lee:lee /mnt/source
+sudo chown lee:lee /mnt/android
 ```
 
 ### 创建符号链接
@@ -219,7 +206,6 @@ sudo apt install vim nano git unzip \
    libsqlite3-dev sqlite3 \
    pkg-config
   
-
 # 配置 git
 git config --global user.email "14991386@qq.com"
 git config --global user.name "liwenjun"
@@ -591,14 +577,14 @@ ln -s /mnt/workspace/dev+base/.stack
 ```bash
 # 安装依赖包 
 sudo apt install \
- libffi-dev \
- libffi8 \
- libgmp-dev \
- libgmp10 \
- libncurses-dev \
- libncurses5 \
- libtinfo5 \
- pkg-config
+	libffi-dev \
+	libffi8 \
+ 	libgmp-dev \
+ 	libgmp10 \
+ 	libncurses-dev \
+ 	libncurses5 \
+ 	libtinfo5 \
+ 	pkg-config
 
 # ghcup
 curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | sh
@@ -631,102 +617,49 @@ opam install ocaml-lsp-server odoc ocamlformat utop
 ## 配置 X Server
 
 ```bash
-# 安装软件包
-sudo apt install xorg
-sudo apt install openbox
-sudo apt install lightdm
-
-reboot
-
-# 修复xsession报错
-cat <<\EOF | sudo tee /etc/X11/Xsession.d/20x11-add-hasoption
-# temporary fix for LP# 1922414, 1955135 and 1955136 bugs
-# read OPTIONFILE
-OPTIONS=$(cat "$OPTIONFILE") || true
-
-has_option() {
- if [ "${OPTIONS#*$1}" != "$OPTIONS" ]; then
-   return 0
- else
-   return 1
- fi
-}
-EOF
+# 设置中文
+sudo apt install language-pack-zh-hans
+sudo dpkg-reconfigure locales # 选择zh_CN.UTF-8和en_US.UTF-8, 默认zh_CN.UTF-8
 
 # 有效设置显示
 echo "export DISPLAY=:10.0" >> ~/.profile
-echo "export DISPLAY=:10.0" >> ~/.bashrc
-
-#
-xhost +localhost
-
-# sudo systemctl status lightdm.service
 ```
 
-## 安装中文字体
+### 配置中文输入法
 
-```bash
-# 查看已安装中文字体
-fc-list :lang=zh
+````bash
+#　安装 fcitx
+sudo apt install fcitx \
+	fonts-noto-cjk fonts-noto-core fonts-noto-color-emoji \
+	dbus-x11 \
+	fcitx-googlepinyin fcitx-table-wubi-large
 
-# 安装基本字体，解决中文显示问题 
-sudo apt install fonts-noto-core fonts-noto-cjk
+# Confiure environment
+# generate dbus machine id using root account:
+# 已有 sudo dbus-uuidgen > /var/lib/dbus/machine-id
 
-# 正确设置区域，解决字体显示混乱的问题
-sudo nano /etc/locale.gen
+cat | sudo tee /etc/profile.d/fcitx.sh <<EOF
+#!/bin/bash
+export QT_IM_MODULE=fcitx
+export GTK_IM_MODULE=fcitx
+export XMODIFIERS=@im=fcitx
+export DefaultIMModule=fcitx
 
-# 找到以下几行，将它们前面的井号（「#」）删掉，然后保存：
-#en_US.UTF-8 UTF-8
-...
-#zh_CN.UTF-8 UTF-8
+#optional
+fcitx-autostart &>/dev/null
+EOF
 
-# 激活区域支持
-sudo locale-gen
-
-# 设置中文
-sudo apt install language-pack-zh-hans
-sudo update-locale LANG=zh_CN.UTF-8
-
-# 重启生效
-sudo reboot
-
-# 删除 ibus 输入法
-#sudo apt search ibus | grep 安装
-#sudo apt search ibus | grep install
-sudo apt autoremove --purge ibus
-
-# 安装 fcitx 中文输入法
-sudo apt install fcitx
-
-# im-config是Input Method Configuration的缩写
-im-config
-
-# 安装谷歌拼音输入法（Google Pinyin）
-sudo apt install fcitx-googlepinyin
-
-# 装后运行如下命令配置谷歌拼音输入法：
-# 在添加的界面中加入 GooglePinyin 输入法（如果没有需要重启系统）
+# 运行下列命令添加并配置输入法
 fcitx-config-gtk3
+````
 
-# 输入法配置
-# 输入法切换 Ctrl + 空格
-fcitx-configtool
-```
-
-## 安装更多中文字体，包括Windows字体
+### 安装更多中文字体，包括Windows字体
 
 ```bash
-#
-sudo apt install fontconfig mkfontscale
-
 # 安装中文字体
 sudo mkdir -p /usr/share/fonts/chinese
 
 # 将要安装的字体上传到该文件夹下
-
-# 生成索引字体
-cd /usr/share/fonts/chinese
-sudo mkfontscale
 
 # 更新字体缓存
 fc-cache -fv
@@ -774,12 +707,121 @@ rm -fr Typora
 ln -s /tmp Typora
 
 # 运行一次 Typora 并注册
-# 会建一个许可文件 ~/.config/Typora/xfi03lCYzY
+# 会建一个许可文件 ~/.config/Typora/Vax4u0GGta
+# 此文件名在每次注册时可能会不一样，具体查看 ~/.config/Typora/ 目录
 # 将此文件迁移
-mv ~/.config/Typora/xfi03lCYzY /mnt/workspace/dev+base/Typora-linux-x64/
+mv ~/.config/Typora/Vax4u0GGta /mnt/workspace/dev+base/Typora-linux-x64/LIC_VM
+mv ~/.config/Typora/Uq0bHbcKS5 /mnt/workspace/dev+base/Typora-linux-x64/LIC_WSL
 
 # 编辑 /etc/bash.bashrc 在文件末尾加入如下一行命令
-ln -s /mnt/workspace/dev+base/Typora-linux-x64/xfi03lCYzY /tmp/xfi03lCYzY
+echo "mkdir /tmp/Typora && ln -s /mnt/workspace/dev+base/Typora-linux-x64/LIC_VM /tmp/Typora/Vax4u0GGta" | sudo tee -a /etc/bash.bashrc
+
+echo "mkdir /tmp/Typora && ln -s /mnt/workspace/dev+base/Typora-linux-x64/LIC_WSL /tmp/Typora/Uq0bHbcKS5" | sudo tee -a /etc/bash.bashrc
+```
+
+## 安装 UltraEdit
+
+```bash
+# 解压缩安装
+cd /mnt/workspace/dev+base/
+tar -zxvf /mnt/d/openSUSE-Leap/uex_23.0.0.21_amd64.tar.gz
+cd ~/.local/bin
+ln -s /mnt/workspace/dev+base/uex/bin/uex
+
+# 运行一次
+uex
+
+# 保存语法高亮文件 (只需执行一次)
+mv ~/.idm/uex/wordfiles /mnt/workspace/dev+base/uex/share/
+# 以后只需要执行这一行命令即可
+rm -fr ~/.idm/uex/wordfiles
+ln -s /mnt/workspace/dev+base/uex/share/wordfiles ~/.idm/uex/wordfiles
+
+# Linux 下 UltraEdit 破解 30 天试用限制
+rm -rfd ~/.idm/uex
+rm -rf ~/.idm/*.spl
+rm -rf /tmp/*.sp
+```
+
+## 安装 Beyond Compare
+
+```bash
+# 安装依赖包
+sudo apt install \
+	desktop-file-utils gcr gnome-keyring gnome-keyring-pkcs11 \
+	gvfs gvfs-backends gvfs-common gvfs-daemons \
+  	gvfs-fuse gvfs-libs libarchive13 libatasmart4 libavahi-glib1 \
+  	libblockdev-crypto2 libblockdev-fs2 libblockdev-loop2 \
+  	libblockdev-part-err2 libblockdev-part2 libblockdev-swap2 \
+  	libblockdev-utils2 libblockdev2 libcdio-cdda2 \
+  	libcdio-paranoia2 libcdio19 libexif12 libgck-1-0 libgcr-base-3-1 \
+  	libgcr-ui-3-1 libgdata-common libgdata22 \
+  	libgoa-1.0-0b libgoa-1.0-common libgpgme11 libgphoto2-6 \
+  	libgphoto2-l10n libgphoto2-port12 libimobiledevice6 libldb2 \
+  	libmtp-common libmtp-runtime libmtp9 libnfs13 libopenjp2-7 \
+  	libpam-gnome-keyring libparted-fs-resize0 libplist3 \
+  	libpoppler118 libqt5printsupport5 libqt5x11extras5 libsmbclient \
+  	libtalloc2 libtevent0 libudisks2-0 libusbmuxd6 \
+  	libvolume-key1 libwbclient0 p11-kit p11-kit-modules \
+  	pinentry-gnome3 poppler-data poppler-utils python3-ldb \
+  	python3-talloc samba-libs udisks2 usbmuxd
+
+#
+tar /tmp/bcompare-5.0.4.30422.x86_64.tar.gz
+cd bcompare-5.0.4.30422
+
+# 修改 install.sh  PREFIX=$HOME/bcompare
+mkdir ~/bcompare
+./install.sh
+
+cd ~
+mv bcompare /mnt/workspace/dev+base/
+ln -s /mnt/workspace/dev+base/bcompare
+cd .local/bin/
+ln -s ~/bcompare/bin/bcompare
+```
+
+### 破解
+
+前置工作
+
+使用 010Editor 等二进制工具，修改 Beyond Compare 可执行文件中内置的 RSA 密钥
+
+修改前：
+
+```
+++11Ik:7EFlNLs6Yqc3p-LtUOXBElimekQm8e3BTSeGhxhlpmVDeVVrrUAkLTXpZ7mK6jAPAOhyHiokPtYfmokklPELfOxt1s5HJmAnl-5r8YEvsQXY8-dm6EFwYJlXgWOCutNn2+FsvA7EXvM-2xZ1MW8LiGeYuXCA6Yt2wTuU4YWM+ZUBkIGEs1QRNRYIeGB9GB9YsS8U2-Z3uunZPgnA5pF+E8BRwYz9ZE--VFeKCPamspG7tdvjA3AJNRNrCVmJvwq5SqgEQwINdcmwwjmc4JetVK76og5A5sPOIXSwOjlYK+Sm8rvlJZoxh0XFfyioHz48JV3vXbBKjgAlPAc7Np1+wk
+```
+
+修改后（修改字符串末尾的 `p1+wk` 为 `pn+wk` ）：
+
+```
+++11Ik:7EFlNLs6Yqc3p-LtUOXBElimekQm8e3BTSeGhxhlpmVDeVVrrUAkLTXpZ7mK6jAPAOhyHiokPtYfmokklPELfOxt1s5HJmAnl-5r8YEvsQXY8-dm6EFwYJlXgWOCutNn2+FsvA7EXvM-2xZ1MW8LiGeYuXCA6Yt2wTuU4YWM+ZUBkIGEs1QRNRYIeGB9GB9YsS8U2-Z3uunZPgnA5pF+E8BRwYz9ZE--VFeKCPamspG7tdvjA3AJNRNrCVmJvwq5SqgEQwINdcmwwjmc4JetVK76og5A5sPOIXSwOjlYK+Sm8rvlJZoxh0XFfyioHz48JV3vXbBKjgAlPAc7Npn+wk
+```
+
+生成注册密钥
+
+```
+git clone https://github.com/garfield-ts/BCompare_Keygen.git
+cd BCompare_Keygen
+pip3 install -r requirements.txt
+python3 keygen.py
+```
+
+得到可用的注册密钥：
+
+```
+--- BEGIN LICENSE KEY ---
+7uo7UY8gVANuMyCkDtSZRnNBkDXr1o4msYwtu7GFPaZ9B6naWXfsqEBgD5hM8jm3Sw2L4oFHY53VchaHv4j3q4QNiNxPgcv3qz89nKu3VSgQDVpPrAUWKgkjko5Gvck7BBBJmnKbGZJtDTi21WnJ5AMm7upD6QXgbf2BUS7toxB7jzhFLyotDj59KMGkgXMBXeUoa6T7Yt76MZN6UcHqYG5fMLuBp1JfGxpMXE7AMeUXXLwvAxsJGMkC5oS93WoVLopUoBW4SYNpS7YzzirkqZdRt58TbQpqcvwFeD32X2ZamVAv9SjeQUQhyEwktExFwTc541HrJeDV2xqfr4EgbUprSWEu8p
+--- END LICENSE KEY -----
+```
+
+用上述密钥注册后，备份注册文件：
+
+
+```bash
+# Crack
+cp ~/.config/bcompare5/BC5Key.txt ~/bcompare/lib64/beyondcompare/
 ```
 
 ## 配置 `vscode` 开发环境
@@ -799,14 +841,46 @@ Host ubuntu
 ### 安装插件
 
 ```bash
-code .
-
 # 安装下列plugin
 #
 # Elm
 # Python
 # REST Client
 # rust-analyser
+```
+
+## 解决 vm 与 wsl 用户 uid 和 gid 不一致问题
+
+```bash
+# 用户postgres
+# 在vm中UID和GID如下:
+postgres  UID: 108
+postgres  GID: 113
+
+# 在wsl中UID和GID如下：
+postgres UID: 110
+postgres GID: 120
+
+# 需将二个平台的uid和gid改为一致。
+# 向编号大的一方看齐。
+# 修改vm中的用户向wsl看齐
+
+# 修改前准备
+sudo service postgresql stop
+
+# 修改命令
+sudo usermod -u110 postgres
+sudo groupmod -g120 postgres
+
+# 手动修改文件属性
+sudo find / -user 108 -exec chown -h postgres {} \;
+sudo find / -group 113 -exec chgrp -h postgres {} \;
+
+# 这样用户和组的uid、gid就修改好了。可以用id命令看下是否修改的如我们所愿。
+id -u postgres
+id -g postgres
+grep postgres /etc/passwd
+grep postgres /etc/group
 ```
 
 ## 删除旧内核
@@ -818,8 +892,6 @@ code .
 ```
 dpkg --list | grep linux-image
 ```
-
-如图所示，第一列显示了`rc`和`ii`两种软件包状态指示符：
 
 - `ii`：表示已安装，并成功安装和配置。它表示相应的软件包已安装在当前系统上，并处于功能正常的状态。
 - **`rc`**：表示已删除，但配置文件仍然存在。它表示该软件包已被删除，但其配置文件仍然存在于系统中。这种状态通常在软件包被删除但没有完全清除时出现，为将来重新安装时保留配置文件。
@@ -864,7 +936,7 @@ sudo apt purge linux-image-x.x.x-x-generic
 sudo update-grub
 ```
 
-6. 重新启动 Ubuntu 系统。
+6. 重新启动。
 
 ## 清理
 

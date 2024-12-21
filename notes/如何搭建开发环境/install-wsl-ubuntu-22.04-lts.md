@@ -33,6 +33,10 @@ wsl --install --no-launch --web-download --distribution  Ubuntu-22.04
 ## 基本配置项
 
 ```bash
+# 添加普通用户lee免密
+echo "lee ALL=(ALL) NOPASSWD: ALL" | sudo tee /etc/sudoers.d/lee
+sudo chmod 0440 /etc/sudoers.d/lee
+
 # 使用内存盘
 sudo systemctl link /usr/share/systemd/tmp.mount
 
@@ -50,20 +54,12 @@ cd /var
 sudo rm -fr tmp
 sudo ln -s /tmp
 
-# 添加普通用户lee免密
-echo "lee ALL=(ALL) NOPASSWD: ALL" | sudo tee /etc/sudoers.d/lee
-sudo chmod 0440 /etc/sudoers.d/lee
-```
-
-```bash
 # 解析git地址 
 echo "185.199.108.133 raw.githubusercontent.com" | sudo tee -a /etc/hosts
 echo "185.199.109.133 raw.githubusercontent.com" | sudo tee -a /etc/hosts
 echo "185.199.110.133 raw.githubusercontent.com" | sudo tee -a /etc/hosts
 echo "185.199.111.133 raw.githubusercontent.com" | sudo tee -a /etc/hosts
-```
 
-```bash
 # 为 npm 配置国内源
 echo 'registry=https://registry.npmmirror.com' >> ~/.npmrc
 
@@ -79,20 +75,15 @@ EOF
 # 配置 git
 git config --global user.email "14991386@qq.com"
 git config --global user.name "liwenjun"
-```
 
-```bash
-# 删除 snapd
-sudo apt autoremove --purge snapd
-sudo rm -rf /var/cache/snapd/
-rm -rf ~/snap
-rm -rf /snap
+# 解决 GUI 应用程序启动报错
+echo "sudo rm -fr /tmp/.X11-unix && sudo ln -s /mnt/wslg/.X11-unix /tmp/.X11-unix" | sudo tee -a /etc/bash.bashrc
 
-#
-sudo apt autoremove --purge packagekit
-
-# 删除 vim-tiny
-sudo apt remove vim-tiny
+# 删除不用的软件包 snapd、packagekit、vim-tiny
+sudo apt autoremove --purge -y \
+	snapd \
+	packagekit \
+	vim-tiny
 ```
 
 ```bash
@@ -100,28 +91,19 @@ sudo apt remove vim-tiny
 exit
 wsl --shutdown
 wsl
+```
 
+```bash
 # 更新
 sudo apt update
 sudo apt upgrade
 
 # 安装
 sudo apt install vim nano unzip \
- build-essential \
-   libpq-dev libssl-dev libffi-dev \
-   libsqlite3-dev pkg-config
-```
-
-### 配置GUI选项
-
-```bash
-# 安装中文字体
-sudo ln -s /mnt/c/Windows/Fonts /usr/share/fonts/win
-fc-cache -fv
-
-# 解决 GUI 应用程序启动报错
-# 编辑 /etc/bash.bashrc 在文件末尾加入如下一行命令：
-sudo rm -fr /tmp/.X11-unix && sudo ln -s /mnt/wslg/.X11-unix /tmp/.X11-unix
+	build-essential \
+	libssl-dev libffi-dev \
+	libsqlite3-dev \
+	pkg-config
 ```
 
 ### [调整`WSL`内存使用](https://learn.microsoft.com/zh-cn/windows/wsl/wsl-config)
@@ -133,8 +115,8 @@ C:\Users\<UserName>\.wslconfig
 # 加入如下内容
 [wsl2]
 memory=36GB 
-processors=10
-swap=4GB
+processors=6
+swap=2GB
 localhostforwarding=true
 ```
 
@@ -147,27 +129,15 @@ localhostforwarding=true
 - 打开存储\磁盘管理，右键点击”磁盘管理“，选择”`创建 VHD`“，虚拟硬盘格式选择”`VHDX`“，其他自己设置，然后点”确定“；
 - 选择刚才创建的磁盘， 右键点击”`分离 VHD`“
 
-### 挂载 `vhdx`
+### 挂载 `vhd`
 
 ```bash
-# 创建自动任务挂载 vhdx
+# 创建自动任务挂载 vhd
 # 创建启动脚本 wsl2.bat
 # 以管理员身份运行：
-wsl --mount --vhd D:\Dev\wsl2_dev\workspace.vhdx --bare
-wsl --mount --vhd D:\Dev\wsl2_dev\source.vhdx --bare
-wsl --mount --vhd D:\Dev\wsl2_dev\android.vhdx --bare
-
-# 方法一
-# 启动任务管理器
-# 选择 启动应用
-# 点击 运行新任务
-# 选择脚本，选中 以管理员运行
-
-# 方法二
-# 启动 `任务计划程序`
-# 创建任务
-# 选择 `只在用户登录时运行` , 勾选 `使用最高权限运行`
-# 在操作中添加前面创建的脚本
+wsl --mount --vhd C:\wsl\workspace.vhdx --bare
+wsl --mount --vhd C:\wsl\source.vhdx --bare
+wsl --mount --vhd C:\wsl\android.vhdx --bare
 ```
 
 ### 在 `wsl` 中格式化并挂载
@@ -175,19 +145,6 @@ wsl --mount --vhd D:\Dev\wsl2_dev\android.vhdx --bare
 ```bash
 # 查看磁盘信息
 lsblk
-
-NAME MAJ:MIN RM   SIZE RO TYPE MOUNTPOINTS
-sda    8:0    0 388.4M  1 disk
-sdb    8:16   0     6G  0 disk [SWAP]
-sdc    8:32   0   102G  0 disk
-sdd    8:48   0    61G  0 disk
-sde    8:64   0    31G  0 disk
-sdf    8:48   0     1T  0 disk /mnt/wslg/distro
-                               /
-# 可见 sdc, sdd 是新挂载的磁盘
-sdc -> workspace  102GB
-sdd -> source      61GB
-sde -> android     31GB
 ```
 
 ```bash
@@ -201,16 +158,17 @@ sudo fdisk /dev/sde
 lsblk
 
 NAME   MAJ:MIN RM   SIZE RO TYPE MOUNTPOINTS
-sda      8:0    0 388.4M  1 disk
-sdb      8:16   0     6G  0 disk [SWAP]
-sdc      8:32   0   102G  0 disk
-└─sdc1   8:33   0   102G  0 part
-sdd      8:48   0    61G  0 disk
-└─sdd1   8:49   0    61G  0 part
-sde      8:64   0    31G  0 disk
-└─sde1   8:65   0    31G  0 part
-sdf      8:48   0     1T  0 disk /mnt/wslg/distro
-                                 /
+sdc      8:32   0    64G  0 disk
+└─sdc1   8:33   0    64G  0 part
+sdd      8:48   0    48G  0 disk
+└─sdd1   8:49   0    48G  0 part
+sde      8:64   0    24G  0 disk
+└─sde1   8:65   0    24G  0 part
+
+# 可见 sdc, sdd, sde 是新挂载的磁盘
+sdc -> workspace   64GB
+sdd -> source      48GB
+sde -> android     24GB
 ```
 
 ```bash
@@ -221,44 +179,17 @@ sudo mkfs.ext4 /dev/sde1
 ```
 
 ```bash
-# 手动挂载磁盘
-sudo mkdir /mnt/workspace
-sudo chmod 777 /mnt/workspace
-sudo mount /dev/sdc1 /mnt/workspace
-
-sudo mkdir /mnt/source
-sudo chmod 777 /mnt/source
-sudo mount /dev/sdd1 /mnt/source
-
-sudo mkdir /mnt/android
-sudo chmod 777 /mnt/android
-sudo mount /dev/sde1 /mnt/android
-```
-
-```bash
-# 自动挂载
 # 查询磁盘UUID
 sudo blkid
 
-/dev/sdf: UUID="c842124c-ac37-42e1-a7db-be85374b0742" BLOCK_SIZE="4096" TYPE="ext4"
-/dev/sdb: UUID="cff8dfc1-4905-42a3-a644-807f16e069c2" TYPE="swap"
-/dev/sda: BLOCK_SIZE="4096" TYPE="ext4"
-/dev/sdc1: UUID="6b4bbc33-4a48-476a-8a36-2cbb89ea6aa4" BLOCK_SIZE="4096" TYPE="ext4" PARTUUID="1cd0932e-01"
-/dev/sdd1: UUID="75493a97-bb35-4df0-b075-c45d8605d516" BLOCK_SIZE="4096" TYPE="ext4" PARTUUID="477035ba-01"
-/dev/sde1: UUID="03e78d1a-62b9-46dd-a252-e78b09b4b6c4" BLOCK_SIZE="4096" TYPE="ext4" PARTUUID="4cf2c92f-01"
+/dev/sdc1: UUID="d8938301-9f46-4103-8fbc-a0476ec4326f"
+/dev/sdd1: UUID="94b212e6-93c5-429e-9679-0918e4314dff"
+/dev/sde1: UUID="3bdf95e1-1a04-4abf-9544-a1e10c172975"
 
-# 可以看到UUID为
-sdc1 = 6b4bbc33-4a48-476a-8a36-2cbb89ea6aa4
-sdd1 = 75493a97-bb35-4df0-b075-c45d8605d516
-sde1 = 03e78d1a-62b9-46dd-a252-e78b09b4b6c4
-
-# 编辑分区自动挂载文件
-sudo vim /etc/fstab
-
-# 打开后，添加如下内容
-UUID=6b4bbc33-4a48-476a-8a36-2cbb89ea6aa4 /mnt/workspace ext4 defaults 0 0
-UUID=75493a97-bb35-4df0-b075-c45d8605d516 /mnt/source ext4 defaults 0 0
-UUID=03e78d1a-62b9-46dd-a252-e78b09b4b6c4 /mnt/android ext4 defaults 0 0
+# 挂载
+echo "UUID=d8938301-9f46-4103-8fbc-a0476ec4326f /mnt/workspace ext4 defaults 0 0" | sudo tee -a /etc/fstab
+echo "UUID=94b212e6-93c5-429e-9679-0918e4314dff /mnt/source ext4 defaults 0 0" | sudo tee -a /etc/fstab
+echo "UUID=3bdf95e1-1a04-4abf-9544-a1e10c172975 /mnt/android ext4 defaults 0 0" | sudo tee -a /etc/fstab
 ```
 
 ### 创建符号链接
@@ -289,17 +220,9 @@ sudo apt install -y postgresql-common
 sudo /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh
 
 sudo apt update
-sudo apt upgrade
-sudo apt autoremove
 
 # 安装
-sudo apt install postgresql postgresql-contrib
-
-# 将数据库迁移到工作区
-sudo service postgresql stop
-cd /var/lib
-sudo mv /var/lib/postgresql /mnt/workspace/dev+base/
-sudo ln -s /mnt/workspace/dev+base/postgresql
+sudo apt install postgresql postgresql-contrib libpq-dev
 
 # 版本
 psql --version
@@ -329,10 +252,9 @@ sudo nano /etc/postgresql/17/main/postgresql.conf
 ## 改为
 ## listen_addresses = '*'
 
-sudo nano /etc/postgresql/17/main/pg_hba.conf
-## 在文件末尾添加如下二行
-## host    all             all             0.0.0.0/0            scram-sha-256
-## host    all             all             ::/0                 scram-sha-256
+# 允许 所有主机通过密码访问
+echo "host    all             all             0.0.0.0/0            scram-sha-256" | sudo tee -a /etc/postgresql/17/main/pg_hba.conf
+echo "host    all             all             ::/0                 scram-sha-256" | sudo tee -a /etc/postgresql/17/main/pg_hba.conf
 
 # 重启生效
 sudo service postgresql restart
@@ -398,6 +320,24 @@ postgres=# \q
 psql -U dev -d devdb -h localhost
 ```
 
+### 将数据库迁移到附加盘
+
+```bash
+# 先停止数据库服务
+sudo service postgresql stop
+
+#
+mkdir -p /mnt/source/pgsql+data
+sudo chown postgres:postgres /mnt/source/pgsql+data
+
+# 迁移文件
+sudo -u postgres mv /var/lib/postgresql/17 /mnt/source/pgsql+data/
+
+# 创建链接
+cd /var/lib/postgresql
+sudo -u postgres ln -s /mnt/source/pgsql+data/17
+```
+
 ### 获取 `wsl2` 本机ip地址
 
 ```bash
@@ -410,7 +350,6 @@ ip addr show eth0
 ##       valid_lft forever preferred_lft forever
 ##    inet6 fe80::215:5dff:fe83:64b/64 scope link
 ##       valid_lft forever preferred_lft forever
-
 
 # 或更短的命令
 hostname -I
@@ -487,7 +426,7 @@ mv .pyenv /mnt/workspace/dev+base/
 ln -s /mnt/workspace/dev+base/.pyenv
 
 #
-sudo apt install python3-venv python3-dev
+sudo apt install python3-venv python3-dev python3-pip
 
 # 安装 poetry 1.8.5
 curl -sSL https://install.python-poetry.org | python3 -
@@ -619,6 +558,7 @@ sudo ln -s /mnt/android/dev+base/android-studio
 export JAVA_HOME=/opt/android-studio/jbr
 
 # 当前用户加入kvm, 运行模拟器
+# sudo groupadd -r kvm
 sudo gpasswd -a $USER kvm
 
 # Use the SDK Manager in Android Studio to install the following:
@@ -708,26 +648,210 @@ rust-analyzer
 ...
 ```
 
+## 配置 X Server
+
+```bash
+# 设置中文
+sudo apt install language-pack-zh-hans
+sudo dpkg-reconfigure locales # 选择zh_CN.UTF-8和en_US.UTF-8, 默认zh_CN.UTF-8
+
+# 有效设置显示
+echo "export DISPLAY=:0.0" >> ~/.profile
+```
+
+### 配置中文输入法
+
+````bash
+#　安装 fcitx
+sudo apt install fcitx \
+	fonts-noto-cjk fonts-noto-core fonts-noto-color-emoji \
+	dbus-x11 \
+	fcitx-googlepinyin fcitx-table-wubi-large
+
+# Confiure environment
+# generate dbus machine id using root account:
+# 已有 sudo dbus-uuidgen > /var/lib/dbus/machine-id
+
+cat | sudo tee /etc/profile.d/fcitx.sh <<EOF
+#!/bin/bash
+export QT_IM_MODULE=fcitx
+export GTK_IM_MODULE=fcitx
+export XMODIFIERS=@im=fcitx
+export DefaultIMModule=fcitx
+
+#optional
+fcitx-autostart &>/dev/null
+EOF
+
+# 运行下列命令添加并配置输入法
+fcitx-config-gtk3
+````
+
+### 安装更多中文字体，包括Windows字体
+
+```bash
+# 安装中文字体
+sudo ln -s /mnt/c/Windows/Fonts /usr/share/fonts/win
+fc-cache -fv
+
+# 检查是否成功安装
+fc-list :lang=zh
+```
+
 ## 安装 Microsoft Edge 浏览器
 
 ```bash
-#
-sudo apt install software-properties-common apt-transport-https ca-certificates
+# 依赖包
+sudo apt install apt-transport-https ca-certificates
 
 # 导入 Microsoft GPG 密钥，确保软件包的安全性：
-wget -q https://packages.microsoft.com/keys/microsoft.asc -O- | sudo apt-key add -
+curl -fSsL https://packages.microsoft.com/keys/microsoft.asc | sudo gpg --dearmor | sudo tee /usr/share/keyrings/microsoft-edge.gpg > /dev/null
 
-#
-sudo add-apt-repository "deb [arch=amd64] https://packages.microsoft.com/repos/edge stable main"
+# 添加 Microsoft Edge 官方软件源
+echo 'deb [arch=amd64 signed-by=/usr/share/keyrings/microsoft-edge.gpg] https://packages.microsoft.com/repos/edge stable main' | sudo tee /etc/apt/sources.list.d/microsoft-edge.list
 
-#
+# 更新
 sudo apt update
 
-#
+# 安装稳定版本
 sudo apt install microsoft-edge-stable
 
 # 版本
 microsoft-edge --version
+```
+
+## 安装 `Typora`
+
+```bash
+# 解压缩安装包
+cd /mnt/workspace/dev+base/
+tar -Jxvf /tmp/typora.tar.xz
+
+# 创建链接
+cd ~/.local/bin
+ln -s /mnt/workspace/dev+base/Typora-linux-x64/Typora typora
+
+# 将 Typora 运行过程文件映射到内存盘
+cd ~/.config
+rm -fr Typora
+ln -s /tmp Typora
+
+# 运行一次 Typora 并注册
+# 会建一个许可文件 ~/.config/Typora/Vax4u0GGta
+# 此文件名在每次注册时可能会不一样，具体查看 ~/.config/Typora/ 目录
+# 将此文件迁移
+mv ~/.config/Typora/Vax4u0GGta /mnt/workspace/dev+base/Typora-linux-x64/LIC_VM
+mv ~/.config/Typora/Uq0bHbcKS5 /mnt/workspace/dev+base/Typora-linux-x64/LIC_WSL
+
+# 编辑 /etc/bash.bashrc 在文件末尾加入如下一行命令
+echo "mkdir /tmp/Typora && ln -s /mnt/workspace/dev+base/Typora-linux-x64/LIC_VM /tmp/Typora/Vax4u0GGta" | sudo tee -a /etc/bash.bashrc
+
+echo "mkdir /tmp/Typora && ln -s /mnt/workspace/dev+base/Typora-linux-x64/LIC_WSL /tmp/Typora/Uq0bHbcKS5" | sudo tee -a /etc/bash.bashrc
+```
+
+## 安装 UltraEdit
+
+```bash
+# 解压缩安装
+cd /mnt/workspace/dev+base/
+tar -zxvf /mnt/d/openSUSE-Leap/uex_23.0.0.21_amd64.tar.gz
+cd ~/.local/bin
+ln -s /mnt/workspace/dev+base/uex/bin/uex
+
+# 运行一次
+uex
+
+# 保存语法高亮文件 (只需执行一次)
+mv ~/.idm/uex/wordfiles /mnt/workspace/dev+base/uex/share/
+# 以后只需要执行这一行命令即可
+rm -fr ~/.idm/uex/wordfiles
+ln -s /mnt/workspace/dev+base/uex/share/wordfiles ~/.idm/uex/wordfiles
+
+# Linux 下 UltraEdit 破解 30 天试用限制
+rm -rfd ~/.idm/uex
+rm -rf ~/.idm/*.spl
+rm -rf /tmp/*.sp
+```
+
+## 安装 Beyond Compare
+
+```bash
+# 安装依赖包
+sudo apt install \
+	desktop-file-utils gcr gnome-keyring gnome-keyring-pkcs11 \
+	gvfs gvfs-backends gvfs-common gvfs-daemons \
+  	gvfs-fuse gvfs-libs libarchive13 libatasmart4 libavahi-glib1 \
+  	libblockdev-crypto2 libblockdev-fs2 libblockdev-loop2 \
+  	libblockdev-part-err2 libblockdev-part2 libblockdev-swap2 \
+  	libblockdev-utils2 libblockdev2 libcdio-cdda2 \
+  	libcdio-paranoia2 libcdio19 libexif12 libgck-1-0 libgcr-base-3-1 \
+  	libgcr-ui-3-1 libgdata-common libgdata22 \
+  	libgoa-1.0-0b libgoa-1.0-common libgpgme11 libgphoto2-6 \
+  	libgphoto2-l10n libgphoto2-port12 libimobiledevice6 libldb2 \
+  	libmtp-common libmtp-runtime libmtp9 libnfs13 libopenjp2-7 \
+  	libpam-gnome-keyring libparted-fs-resize0 libplist3 \
+  	libpoppler118 libqt5printsupport5 libqt5x11extras5 libsmbclient \
+  	libtalloc2 libtevent0 libudisks2-0 libusbmuxd6 \
+  	libvolume-key1 libwbclient0 p11-kit p11-kit-modules \
+  	pinentry-gnome3 poppler-data poppler-utils python3-ldb \
+  	python3-talloc samba-libs udisks2 usbmuxd
+
+#
+tar /tmp/bcompare-5.0.4.30422.x86_64.tar.gz
+cd bcompare-5.0.4.30422
+
+# 修改 install.sh  PREFIX=$HOME/bcompare
+mkdir ~/bcompare
+./install.sh
+
+cd ~
+mv bcompare /mnt/workspace/dev+base/
+ln -s /mnt/workspace/dev+base/bcompare
+cd .local/bin/
+ln -s ~/bcompare/bin/bcompare
+```
+
+### 破解
+
+前置工作
+
+使用 010Editor 等二进制工具，修改 Beyond Compare 可执行文件中内置的 RSA 密钥
+
+修改前：
+
+```
+++11Ik:7EFlNLs6Yqc3p-LtUOXBElimekQm8e3BTSeGhxhlpmVDeVVrrUAkLTXpZ7mK6jAPAOhyHiokPtYfmokklPELfOxt1s5HJmAnl-5r8YEvsQXY8-dm6EFwYJlXgWOCutNn2+FsvA7EXvM-2xZ1MW8LiGeYuXCA6Yt2wTuU4YWM+ZUBkIGEs1QRNRYIeGB9GB9YsS8U2-Z3uunZPgnA5pF+E8BRwYz9ZE--VFeKCPamspG7tdvjA3AJNRNrCVmJvwq5SqgEQwINdcmwwjmc4JetVK76og5A5sPOIXSwOjlYK+Sm8rvlJZoxh0XFfyioHz48JV3vXbBKjgAlPAc7Np1+wk
+```
+
+修改后（修改字符串末尾的 `p1+wk` 为 `pn+wk` ）：
+
+```
+++11Ik:7EFlNLs6Yqc3p-LtUOXBElimekQm8e3BTSeGhxhlpmVDeVVrrUAkLTXpZ7mK6jAPAOhyHiokPtYfmokklPELfOxt1s5HJmAnl-5r8YEvsQXY8-dm6EFwYJlXgWOCutNn2+FsvA7EXvM-2xZ1MW8LiGeYuXCA6Yt2wTuU4YWM+ZUBkIGEs1QRNRYIeGB9GB9YsS8U2-Z3uunZPgnA5pF+E8BRwYz9ZE--VFeKCPamspG7tdvjA3AJNRNrCVmJvwq5SqgEQwINdcmwwjmc4JetVK76og5A5sPOIXSwOjlYK+Sm8rvlJZoxh0XFfyioHz48JV3vXbBKjgAlPAc7Npn+wk
+```
+
+生成注册密钥
+
+```
+git clone https://github.com/garfield-ts/BCompare_Keygen.git
+cd BCompare_Keygen
+pip3 install -r requirements.txt
+python3 keygen.py
+```
+
+得到可用的注册密钥：
+
+```
+--- BEGIN LICENSE KEY ---
+7uo7UY8gVANuMyCkDtSZRnNBkDXr1o4msYwtu7GFPaZ9B6naWXfsqEBgD5hM8jm3Sw2L4oFHY53VchaHv4j3q4QNiNxPgcv3qz89nKu3VSgQDVpPrAUWKgkjko5Gvck7BBBJmnKbGZJtDTi21WnJ5AMm7upD6QXgbf2BUS7toxB7jzhFLyotDj59KMGkgXMBXeUoa6T7Yt76MZN6UcHqYG5fMLuBp1JfGxpMXE7AMeUXXLwvAxsJGMkC5oS93WoVLopUoBW4SYNpS7YzzirkqZdRt58TbQpqcvwFeD32X2ZamVAv9SjeQUQhyEwktExFwTc541HrJeDV2xqfr4EgbUprSWEu8p
+--- END LICENSE KEY -----
+```
+
+用上述密钥注册后，备份注册文件：
+
+
+```bash
+# Crack
+cp ~/.config/bcompare5/BC5Key.txt ~/bcompare/lib64/beyondcompare/
 ```
 
 ## 清理并导出
