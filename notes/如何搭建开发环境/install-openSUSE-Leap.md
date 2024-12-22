@@ -85,7 +85,7 @@ sudo zypper install git libopenssl-devel libffi-devel make gcc gcc-c++ java-17-o
 sudo zypper install python3-devel postgresql-server postgresql-devel sqlite3-devel
 
 # 配置 git
-git config --global user.email "liwenjun@21cn.com"
+git config --global user.email "14991386@qq.com"
 git config --global user.name "liwejun"
 
 # docker
@@ -175,7 +175,7 @@ pyenv uninstall <versions>.
 
 ```bash
 # 安装 volta (JavaScript命令行管理工具)
-# version 2.0.1
+# version 2.0.2
 curl https://get.volta.sh | bash
 
 volta install node
@@ -292,35 +292,85 @@ ghcup tui
     https://software.opensuse.org/
     ```
 
-### Beyond Compare
+### 安装 UltraEdit
+
+```bash
+# 依赖
+sudo zypper in libwebkit2gtk-4_0-37
+
+# 解压缩安装
+cd /opt
+sudo tar -zxvf /tmp/uex_23.0.0.21_amd64.tar.gz
+cd ~/.local/bin
+ln -s /opt/uex/bin/uex
+
+# 运行一次
+uex
+
+# 保存语法高亮文件 (只需执行一次)
+mv ~/.idm/uex/wordfiles /mnt/workspace/dev+base/uex/share/
+# 以后只需要执行这一行命令即可
+rm -fr ~/.idm/uex/wordfiles
+ln -s /mnt/workspace/dev+base/uex/share/wordfiles ~/.idm/uex/wordfiles
+
+# Linux 下 UltraEdit 破解 30 天试用限制
+rm -rfd ~/.idm/uex
+rm -rf ~/.idm/*.spl
+rm -rf /tmp/*.sp
+```
+
+### 安装 Beyond Compare
+
+```bash
+# 安装依赖包
+
+#
+tar /tmp/bcompare-5.0.4.30422.x86_64.tar.gz
+cd bcompare-5.0.4.30422
+sudo ./install.sh
+```
+
+#### 破解
+
+前置工作
+
+使用 010Editor 等二进制工具，修改 Beyond Compare 可执行文件中内置的 RSA 密钥
+
+修改前：
 
 ```
-# 安装
-sudo rpm --import https://www.scootersoftware.com/RPM-GPG-KEY-scootersoftware
-sudo zypper refresh
-# 下载 https://www.scootersoftware.com/files/bcompare-4.4.7.28397.x86_64.rpm
-# sudo zypper install https://www.scootersoftware.com/files/bcompare-4.4.7.28397.x86_64.rpm
-sudo zypper bcompare-4.4.7.28397.x86_64.rpm
+++11Ik:7EFlNLs6Yqc3p-LtUOXBElimekQm8e3BTSeGhxhlpmVDeVVrrUAkLTXpZ7mK6jAPAOhyHiokPtYfmokklPELfOxt1s5HJmAnl-5r8YEvsQXY8-dm6EFwYJlXgWOCutNn2+FsvA7EXvM-2xZ1MW8LiGeYuXCA6Yt2wTuU4YWM+ZUBkIGEs1QRNRYIeGB9GB9YsS8U2-Z3uunZPgnA5pF+E8BRwYz9ZE--VFeKCPamspG7tdvjA3AJNRNrCVmJvwq5SqgEQwINdcmwwjmc4JetVK76og5A5sPOIXSwOjlYK+Sm8rvlJZoxh0XFfyioHz48JV3vXbBKjgAlPAc7Np1+wk
+```
 
-# 安装过程出现提示时，选择2 
-Problem: nothing provides 'gvfs-smb' needed by the to be installed bcompare
- Solution 1: do not install bcompare
- Solution 2: break bcompare by ignoring some of its dependencies
+修改后（修改字符串末尾的 `p1+wk` 为 `pn+wk` ）：
 
-Choose from above solutions by number or cancel [1/2/c/d/?] (c): 2
+```
+++11Ik:7EFlNLs6Yqc3p-LtUOXBElimekQm8e3BTSeGhxhlpmVDeVVrrUAkLTXpZ7mK6jAPAOhyHiokPtYfmokklPELfOxt1s5HJmAnl-5r8YEvsQXY8-dm6EFwYJlXgWOCutNn2+FsvA7EXvM-2xZ1MW8LiGeYuXCA6Yt2wTuU4YWM+ZUBkIGEs1QRNRYIeGB9GB9YsS8U2-Z3uunZPgnA5pF+E8BRwYz9ZE--VFeKCPamspG7tdvjA3AJNRNrCVmJvwq5SqgEQwINdcmwwjmc4JetVK76og5A5sPOIXSwOjlYK+Sm8rvlJZoxh0XFfyioHz48JV3vXbBKjgAlPAc7Npn+wk
+```
 
-# 卸载
-sudo zypper remove bcompare
+生成注册密钥
 
-# 破解
-cd /usr/lib64/beyondcompare/
-sudo sed -i "s/keexjEP3t4Mue23hrnuPtY4TdcsqNiJL-5174TsUdLmJSIXKfG2NGPwBL6vnRPddT7tH29qpkneX63DO9ECSPE9rzY1zhThHERg8lHM9IBFT+rVuiY823aQJuqzxCKIE1bcDqM4wgW01FH6oCBP1G4ub01xmb4BGSUG6ZrjxWHJyNLyIlGvOhoY2HAYzEtzYGwxFZn2JZ66o4RONkXjX0DF9EzsdUef3UAS+JQ+fCYReLawdjEe6tXCv88GKaaPKWxCeaUL9PejICQgRQOLGOZtZQkLgAelrOtehxz5ANOOqCaJgy2mJLQVLM5SJ9Dli909c5ybvEhVmIC0dc9dWH+/N9KmiLVlKMU7RJqnE+WXEEPI1SgglmfmLc1yVH7dqBb9ehOoKG9UE+HAE1YvH1XX2XVGeEqYUY-Tsk7YBTz0WpSpoYyPgx6Iki5KLtQ5G-aKP9eysnkuOAkrvHU8bLbGtZteGwJarev03PhfCioJL4OSqsmQGEvDbHFEbNl1qJtdwEriR+VNZts9vNNLk7UGfeNwIiqpxjk4Mn09nmSd8FhM4ifvcaIbNCRoMPGl6KU12iseSe+w+1kFsLhX+OhQM8WXcWV10cGqBzQE9OqOLUcg9n0krrR3KrohstS9smTwEx9olyLYppvC0p5i7dAx2deWvM1ZxKNs0BvcXGukR+/g" BCompare
+```
+git clone https://github.com/garfield-ts/BCompare_Keygen.git
+cd BCompare_Keygen
+pip3 install -r requirements.txt
+python3 keygen.py
+```
 
-# 然后打开Beyond Conpare，弹出Trial Mode Error！弹窗
-# 单击右下角按钮“Enter Key”，输入以下秘钥【注意：包括开始和结尾的横线行】
+得到可用的注册密钥：
+
+```
 --- BEGIN LICENSE KEY ---
-GXN1eh9FbDiX1ACdd7XKMV7hL7x0ClBJLUJ-zFfKofjaj2yxE53xauIfkqZ8FoLpcZ0Ux6McTyNmODDSvSIHLYhg1QkTxjCeSCk6ARz0ABJcnUmd3dZYJNWFyJun14rmGByRnVPL49QH+Rs0kjRGKCB-cb8IT4Gf0Ue9WMQ1A6t31MO9jmjoYUeoUmbeAQSofvuK8GN1rLRv7WXfUJ0uyvYlGLqzq1ZoJAJDyo0Kdr4ThF-IXcv2cxVyWVW1SaMq8GFosDEGThnY7C-SgNXW30jqAOgiRjKKRX9RuNeDMFqgP2cuf0NMvyMrMScnM1ZyiAaJJtzbxqN5hZOMClUTE+++
+7uo7UY8gVANuMyCkDtSZRnNBkDXr1o4msYwtu7GFPaZ9B6naWXfsqEBgD5hM8jm3Sw2L4oFHY53VchaHv4j3q4QNiNxPgcv3qz89nKu3VSgQDVpPrAUWKgkjko5Gvck7BBBJmnKbGZJtDTi21WnJ5AMm7upD6QXgbf2BUS7toxB7jzhFLyotDj59KMGkgXMBXeUoa6T7Yt76MZN6UcHqYG5fMLuBp1JfGxpMXE7AMeUXXLwvAxsJGMkC5oS93WoVLopUoBW4SYNpS7YzzirkqZdRt58TbQpqcvwFeD32X2ZamVAv9SjeQUQhyEwktExFwTc541HrJeDV2xqfr4EgbUprSWEu8p
 --- END LICENSE KEY -----
+```
+
+用上述密钥注册后，备份注册文件：
+
+
+```bash
+# Crack
+cp ~/.config/bcompare5/BC5Key.txt ~/bcompare/lib64/beyondcompare/
 ```
 
 ### Typora
@@ -355,13 +405,13 @@ https://dl.koodoreader.com/v1.5.1/Koodo-Reader-1.5.1.AppImage
 ### LocalSend
 
 ```
-https://github.com/localsend/localsend/releases/download/v1.15.4/LocalSend-1.15.4-linux-x86-64.AppImage
+https://github.com/localsend/localsend/releases/download/v1.16.1/LocalSend-1.16.1-linux-x86-64.AppImage
 ```
 
 ### IntelliJ IDEA Community
 
 ```
-https://download-cdn.jetbrains.com.cn/idea/ideaIC-2024.2.3.tar.gz
+https://download-cdn.jetbrains.com.cn/idea/ideaIC-2024.3.1.1.tar.gz
 ```
 
 ### Android Studio
@@ -398,7 +448,7 @@ sudo zypper install code
 
 ```bash
 # 下载
-wget https://github.com/obsidianmd/obsidian-releases/releases/download/v1.6.7/Obsidian-1.6.7.AppImage
+https://github.com/obsidianmd/obsidian-releases/releases/download/v1.7.7/Obsidian-1.7.7.AppImage
 
 # 编辑文件： /usr/share/applications/obsidian.desktop
 # 输入以下内容：
