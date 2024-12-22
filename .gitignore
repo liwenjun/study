@@ -1,29 +1,59 @@
 # Commons
 **/*.exe
 **/*.bak
+**/*.zip
+**/*.tar.gz
+**/*.tar.xz
 
 # Rust
-**/debug/
-**/target/
+**/debug
+**/target
 **/Cargo.lock
 
 # Elm
-**/elm-stuff/
-**/dist/
-**/build/
-**/.elm-land/
+**/elm-stuff
+**/dist
+**/build
+**/.elm-land
 
 # Python
-**/.venv/
-**/__pycache__/
+**/.venv
+**/__pycache__
 **/poetry.lock
-**/.ipynb_checkpoints/
+**/.ipynb_checkpoints
 **/dist/*.tar.gz
 **/dist/*.whl
+*.py[cod]
+*.so
+**/eggs/
+**/.eggs/
+**/sdist/
+**/wheels/
+**/*.egg-info
+*.egg
+MANIFEST
+*.manifest
+*.spec
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+*.cover
+*.py,cover
+cover/
+*.mo
+*.pot
+.ipynb_checkpoints
+**/__pypackages__
 
 # Nodejs
-**/node_modules/
+**/node_modules
 **/package-lock.json
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
 
 # mdbook
 notes/**/book
@@ -31,3 +61,94 @@ notes/**/src/SUMMARY.md
 
 # Sqlite
 **/*.sqlite*
+
+# Haskell
+**/dist-*
+**/cabal-dev
+*.o
+*.hi
+*.hie
+*.chi
+*.chs.h
+*.dyn_o
+*.dyn_hi
+.hpc
+.hsenv
+**/.cabal-sandbox
+cabal.sandbox.config
+*.prof
+*.aux
+*.hp
+*.eventlog
+**/.stack-work
+cabal.project.local
+cabal.project.local~
+**/.HTF
+.ghc.environment.*
+
+# OCaml
+*.annot
+*.cmo
+*.cma
+*.cmi
+*.a
+*.o
+*.cmx
+*.cmxs
+*.cmxa
+**/_build
+*.byte
+*.native
+setup.data
+setup.log
+.merlin
+*.install
+**/_opam
+
+# Kotlin
+*.class
+*.log
+*.ctxt
+**/.mtj.tmp
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+hs_err_pid*
+replay_pid*
+**/.kotlin
+
+# Delphi
+*.exe
+*.dll
+*.bpl
+*.bpi
+*.dcp
+*.so
+*.apk
+*.drc
+*.map
+*.dres
+*.rsm
+*.tds
+*.dcu
+*.lib
+*.a
+*.o
+*.ocx
+*.cfg
+*.hpp
+*Resource.rc
+*.local
+*.identcache
+*.projdata
+*.tvsconfig
+*.dsk
+__history/
+__recovery/
+*.~*
+*.stat
+modules/
