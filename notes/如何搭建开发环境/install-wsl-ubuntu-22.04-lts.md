@@ -100,7 +100,7 @@ sudo apt upgrade
 
 # 安装
 sudo apt install vim nano unzip \
-	build-essential \
+	build-essential gdb \
 	libssl-dev libffi-dev \
 	libsqlite3-dev \
 	pkg-config
@@ -634,6 +634,15 @@ opam init
 
 #
 opam install ocaml-lsp-server odoc ocamlformat utop
+```
+
+## 配置 SWI-Prolog 开发环境
+
+```bash
+sudo apt install software-properties-common
+sudo apt-add-repository ppa:swi-prolog/stable
+sudo apt update
+sudo apt install swi-prolog
 ```
 
 ## 配置 vscode 运行环境
