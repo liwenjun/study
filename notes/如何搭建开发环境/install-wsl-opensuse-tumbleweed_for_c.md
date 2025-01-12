@@ -1,6 +1,6 @@
 ﻿# 实战`openSUSE Tumbleweed`用于C语言开发
 
-> 2025-01-11  以下安装软件版本均为此日期时的最新版本
+> 2025-01-12  以下安装软件版本均为此日期时的最新版本
 
 去微软官方下载分发包 [`openSUSE Tumbleweed`](https://aka.ms/wsl-opensuse-tumbleweed)
 
@@ -9,7 +9,35 @@
 按标准方法安装。设置用户`lee`。
 
 ```bash
-# 安装时版本
+# 添加普通用户lee免密
+echo "lee ALL=(ALL) NOPASSWD: ALL" | sudo tee /etc/sudoers.d/lee
+sudo chmod 0440 /etc/sudoers.d/lee
+
+# 解析git地址 
+echo "185.199.108.133 raw.githubusercontent.com" | sudo tee -a /etc/hosts
+echo "185.199.109.133 raw.githubusercontent.com" | sudo tee -a /etc/hosts
+echo "185.199.110.133 raw.githubusercontent.com" | sudo tee -a /etc/hosts
+echo "185.199.111.133 raw.githubusercontent.com" | sudo tee -a /etc/hosts
+
+# 从 Snapshot 版本 20200806 开始，全新安装将默认使用 tmpfs 作为 /tmp。
+# 调整 /tmp
+sudo vi /etc/fstab
+# 将    tmpfs /var/tmp tmpfs defaults 0 0
+# 修改为 tmpfs /tmp tmpfs defaults 0 0
+
+# 退出重启 wsl
+
+# 使用内存盘
+rm -fr ~/.cache/
+ln -s /tmp ~/.cache
+
+cd /var
+sudo rm -fr tmp
+sudo ln -s /tmp
+
+
+# 更新大版本
+# 安装时原版本
 cat /etc/os-release
 NAME="openSUSE Tumbleweed"
 VERSION_ID="20211027"
@@ -21,26 +49,32 @@ sudo zypper dup
 # 更新后版本
 cat /etc/os-release
 NAME="openSUSE Tumbleweed"
-VERSION_ID="20250108"
+VERSION_ID="20250109"
 
-# 从 Snapshot 版本 20200806 开始，全新安装将默认使用 tmpfs 作为 /tmp。
-# 使用内存盘
-rm -fr ~/.cache/
-ln -s /tmp ~/.cache
+#
+sudo zypper install -t pattern wsl_base wsl_gui wsl_systemd
 
-cd /var
-sudo rm -fr tmp
-sudo ln -s /tmp
+# 编辑
+sudo vi /etc/wsl.conf
 
-# 添加普通用户lee免密
-echo "lee ALL=(ALL) NOPASSWD: ALL" | sudo tee /etc/sudoers.d/lee
-sudo chmod 0440 /etc/sudoers.d/lee
+# 加入以下内容
+[boot]
+systemd=true
 
-# 解析git地址 
-echo "185.199.108.133 raw.githubusercontent.com" | sudo tee -a /etc/hosts
-echo "185.199.109.133 raw.githubusercontent.com" | sudo tee -a /etc/hosts
-echo "185.199.110.133 raw.githubusercontent.com" | sudo tee -a /etc/hosts
-echo "185.199.111.133 raw.githubusercontent.com" | sudo tee -a /etc/hosts
+# 重启 wsl
+```
+
+## 设置中文
+
+```bash
+# sudo zypper install wqy-zenhei-fonts
+sudo localectl set-locale LANG=zh_CN.UTF-8
+
+#
+sudo vi /etc/sysconfig/language
+INSTALLED_LANGUAGES="zh_CN"
+RC_LANG="zh_CN.UTF-8"
+RC_LC_ALL="zh_CN.UTF-8"
 ```
 
 ## 安装软件包
@@ -49,26 +83,33 @@ echo "185.199.111.133 raw.githubusercontent.com" | sudo tee -a /etc/hosts
 sudo zypper ref
 
 # 
-sudo zypper install git nano 
+sudo zypper install git nano tree
 
 # 配置 git
 git config --global user.email "14991386@qq.com"
 git config --global user.name "liwejun"
 
-#
+# c 工具链
 sudo zypper install \
-	clang lldb lld \
+	clang clang-tools \
+	lldb lld \
 	cmake \
-	gcc gcc-c++ gdb
+	gcc gdb
 
-#
+# 
 sudo zypper install \
 	libopenssl-devel \
 	libffi-devel \
 	sqlite3-devel \
 	ncurses-devel \
 	libzip-devel
-	
+
+#
+sudo zypper install \
+	python311-devel \
+	python311-pip \
+	python3-clang
+
 # 清理
 sudo zypper clean
 sudo rm -rf /var/log/*
