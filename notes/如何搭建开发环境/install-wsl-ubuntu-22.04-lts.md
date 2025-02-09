@@ -27,7 +27,7 @@ openSUSE-Tumbleweed             openSUSE Tumbleweed
 
 ```bash
 # 安装
-wsl --install --no-launch --web-download --distribution  Ubuntu-22.04
+wsl --install --no-launch --web-download --distribution Ubuntu-22.04
 ```
 
 ## 基本配置项
