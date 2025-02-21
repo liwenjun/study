@@ -97,6 +97,7 @@ sudo yast2 timezone
 
 echo 'export LANG="zh_CN.UTF-8"' | tee -a ~/.profile
 
+# 可暂不安装字体
 sudo zypper install \
 	google-noto-serif-fonts \
 	google-noto-sans-sc-fonts \
@@ -178,6 +179,24 @@ idf.py menuconfig
 ```
 Install Remote WSL extension in Visual Studio Code
 Install the Remote - WSL, Remote Development and ESP-IDF extensions
+```
+
+
+
+## 配置 `Arduino-IDE`
+
+```bash
+#
+sudo sudo zypper in libnss3 libsecret-1-0
+
+# 
+sudo usermod -a -G dialout,lock $USER && \
+sudo zypper install git python311-pip python311-pyserial; \
+mkdir -p ~/Arduino/hardware/espressif && \
+cd ~/Arduino/hardware/espressif && \
+git clone git@github.com:espressif/arduino-esp32.git esp32 && \
+cd esp32/tools && \
+python3 get.py  
 ```
 
 
