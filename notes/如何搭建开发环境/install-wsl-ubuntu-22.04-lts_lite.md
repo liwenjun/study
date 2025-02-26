@@ -39,6 +39,10 @@ echo "185.199.108.133 raw.githubusercontent.com" | sudo tee -a /etc/hosts
 echo "185.199.109.133 raw.githubusercontent.com" | sudo tee -a /etc/hosts
 echo "185.199.110.133 raw.githubusercontent.com" | sudo tee -a /etc/hosts
 echo "185.199.111.133 raw.githubusercontent.com" | sudo tee -a /etc/hosts
+echo "140.82.112.4 github.com" | sudo tee -a /etc/hosts
+echo "140.82.114.4 www.github.com" | sudo tee -a /etc/hosts
+echo "199.232.5.194 github.global.ssl.fastly.net" | sudo tee -a /etc/hosts
+echo "54.231.114.219 github-cloud.s3.amazonaws.com" | sudo tee -a /etc/hosts
 
 # 为 npm 配置国内源
 echo 'registry=https://registry.npmmirror.com' >> ~/.npmrc

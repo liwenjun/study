@@ -104,11 +104,10 @@ sudo zypper install \
 	google-noto-sans-sc-mono-fonts 
    
 # sudo zypper install wqy-zenhei-fonts wqy-microhei-fonts ibus-pinyin
-# 使用 Google Noto Sans CJK 默认情况下就没什么问题
-# zypper -n in google-tinos-fonts google-roboto-fonts google-roboto-mono-fonts
-# 强调西文字体主要是因为等宽字体
 
 # 暂不执行下列手工修改命令
+sudo localectl set-locale LANG=zh_CN.UTF-8
+
 sudo vi /etc/sysconfig/language
 INSTALLED_LANGUAGES="zh_CN"
 RC_LANG="zh_CN.UTF-8"
@@ -124,7 +123,7 @@ sudo zypper ref
 sudo zypper install git nano tree
 
 # 配置 git
-git config --global user.email "*@qq.com"
+git config --global user.email "14991386@qq.com"
 git config --global user.name "liwejun"
 ```
 
@@ -143,6 +142,8 @@ mkdir -p ~/esp
 cd ~/esp
 git clone -b v5.4 --recursive git@github.com:espressif/esp-idf.git
 # git clone -b v5.4 --recursive https://github.com/espressif/esp-idf.git
+cd esp-idf
+git submodule update --init --recursive
 
 # 第三步：设置工具
 cd ~/esp/esp-idf

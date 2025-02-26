@@ -111,23 +111,36 @@ EOF
 fcitx-config-gtk3
 ````
 
+## 本机 `C/C++` 开发环境
+
+```bash
+# 安装
+sudo apt install wget nano unzip tree \
+	build-essential gdb cmake \
+	libssl-dev libffi-dev \
+	pkg-config \
+	python3 python3-pip python3-venv python3-setuptools 
+
+# 安装最新稳定版clang, 当前18
+sudo apt install lsb-release wget software-properties-common gnupg
+sudo bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)"
+```
 
 ## `ESP-IDF` 开发工具链
 
 ```bash
 # 第一步：安装准备
-sudo apt install git wget flex bison gperf \
-	python3 python3-pip python3-venv \
-	cmake ninja-build ccache \
-	libffi-dev libssl-dev \
-	dfu-util libusb-1.0-0 \
-	gcc gcc-c++    # 补充本地C/C++, 为编译micropython准备
+sudo apt install flex bison gperf \
+	ninja-build ccache \
+	dfu-util libusb-1.0-0
 
 # 第二步：获取 ESP-IDF
 mkdir -p ~/esp
 cd ~/esp
 git clone -b v5.4 --recursive git@github.com:espressif/esp-idf.git
 # git clone -b v5.4 --recursive https://github.com/espressif/esp-idf.git
+cd esp-idf
+git submodule update --init --recursive
 
 # 第三步：设置工具
 cd ~/esp/esp-idf
@@ -162,7 +175,113 @@ idf.py menuconfig
 ### 安装`VScode`插件
 
 ```
-# 在 wsl 环境下安装 ESP-IDF 插件
+# 在 wsl 环境下安装 ESP-IDF 插件, clangd, python, 
+```
+
+## 编译 `MicroPython`
+
+```bash
+# 检出当前最新版本 https://micropython.org/
+# 2025-02-21 版本是 v1.24.1
+cd ~
+git clone -b v1.24.1 --recursive git@github.com:micropython/micropython.git
+cd micropython
+git submodule update --init --recursive
+
+# 先构建才能进行预编译
+cd mpy-cross
+make
+
+# 构建文档
+python3 -m venv env
+source env/bin/activate
+pip install -r docs/requirements.txt
+cd docs
+make html
+
+# 如果需要构建 stm32 固件，需要 ARM 交叉编译器：
+sudo apt install gcc-arm-none-eabi libnewlib-arm-none-eabi
+
+# 编译v1.24.1仅支持 idf v5.2.2
+# 切换idf版本
+cd ~/esp/esp-idf
+git checkout v5.2.2
+git submodule update --init --recursive
+
+# 安装编译工具
+export IDF_GITHUB_ASSETS="dl.espressif.cn/github_assets"
+./install.sh all
+source export.sh 
+```
+
+## 配置 rust 开发环境
+
+```bash
+# 安装 rust 开发环境 
+# latest update on 2024-11-28, rust version 1.83.0 (90b35a623 2024-11-26)
+#RUSTUP_DIST_SERVER=https://mirrors.tuna.tsinghua.edu.cn/rustup \
+#RUSTUP_UPDATE_ROOT=https://mirrors.tuna.tsinghua.edu.cn/rustup/rustup \
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+
+# 删除html帮助文件，节省存储空间
+rm -fr ~/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/share/doc/rust/html
+
+#
+mkdir -p ~/.cargo/registry
+ln -s /tmp ~/.cargo/registry/src
+
+# 使用本地资源
+#cd ~/.cargo/registry
+#ln -s /mnt/c/Users/lee/scoop/persist/rustup-msvc/.cargo/registry/cache
+#ln -s /mnt/c/Users/lee/scoop/persist/rustup-msvc/.cargo/registry/index
+
+#
+cat > ~/.cargo/config.toml <<EOF
+[build]
+# jobs = 1                      # number of parallel jobs, defaults to # of CPUs
+target-dir = "/tmp/target"         # path of where to place all generated artifacts
+incremental = true            # whether or not to enable incremental compilation
+
+[cargo-new]
+vcs = "none"              # VCS to use ('git', 'hg', 'pijul', 'fossil', 'none')
+
+[profile.release]
+panic = "abort" # Strip expensive panic clean-up logic
+codegen-units = 1 # Compile crates one after another so the compiler can optimize better
+lto = true # Enables link to optimizations
+opt-level = "s" # Optimize for binary size
+strip = true # Remove debug symbols
+
+[source.crates-io]
+registry = "https://github.com/rust-lang/crates.io-index"
+replace-with = 'tuna' # 如：tuna、sjtu、ustc，或者 rustcc
+
+# 中国科学技术大学
+[source.ustc]
+registry = "https://mirrors.ustc.edu.cn/crates.io-index"
+
+# 上海交通大学
+[source.sjtu]
+registry = "https://mirrors.sjtug.sjtu.edu.cn/git/crates.io-index/"
+
+# 清华大学
+[source.tuna]
+registry = "https://mirrors.tuna.tsinghua.edu.cn/git/crates.io-index.git"
+
+# rustcc社区
+[source.rustcc]
+registry = "https://code.aliyun.com/rustcc/crates.io-index.git"
+EOF
+```
+
+### 安装常用工具
+
+```
+cargo install sqlx-cli --no-default-features -F postgres,native-tls,sqlite
+cargo install diesel_cli --no-default-features --features "postgres sqlite"
+
+# cargo install ripgrep
+# cargo install mdbook mdbook-mermaid
 ```
 
 ## `Arduino-IDE`开发环境
@@ -178,12 +297,23 @@ sudo usermod -a -G dialout $USER && \
 sudo apt install python3-serial && \
 mkdir -p ~/Arduino/hardware/espressif && \
 cd ~/Arduino/hardware/espressif && \
-git clone git@github.com:espressif/arduino-esp32.git esp32 && \
+git clone --recursive git@github.com:espressif/arduino-esp32.git esp32 && \
 cd esp32/tools && \
 python3 get.py
+# get.py 使用了 ../package/*.json 配置文件，修改此文件的url指向国内源，可加快速度 
+# 将 https://github.com 替换为 https://dl.espressif.cn/github_assets
+
+# 补充 Windows 环境下的手动安装流程
+# 1、 进入我的文档目录 C:/Users/lee/Documents
+# 2、 创建并进入子目录 [C:/Users/lee/Documents/]Arduino/hardware/espressif
+cd C:/Users/lee/Documents/Arduino/hardware/espressif
+git clone --recursive git@github.com:espressif/arduino-esp32.git esp32
+cd esp32
+git submodule update --init --recursive
+# 在安装编译工具前，先编辑配置文件 package/package_esp32_index.template.json 使用国内源
+#
+./tools/get.exe
 ```
-
-
 
 ## 清理并导出
 

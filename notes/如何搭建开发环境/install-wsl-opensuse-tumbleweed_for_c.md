@@ -18,6 +18,10 @@ echo "185.199.108.133 raw.githubusercontent.com" | sudo tee -a /etc/hosts
 echo "185.199.109.133 raw.githubusercontent.com" | sudo tee -a /etc/hosts
 echo "185.199.110.133 raw.githubusercontent.com" | sudo tee -a /etc/hosts
 echo "185.199.111.133 raw.githubusercontent.com" | sudo tee -a /etc/hosts
+echo "140.82.112.4 github.com" | sudo tee -a /etc/hosts
+echo "140.82.114.4 www.github.com" | sudo tee -a /etc/hosts
+echo "199.232.5.194 github.global.ssl.fastly.net" | sudo tee -a /etc/hosts
+echo "54.231.114.219 github-cloud.s3.amazonaws.com" | sudo tee -a /etc/hosts
 
 # 从 Snapshot 版本 20200806 开始，全新安装将默认使用 tmpfs 作为 /tmp。
 # 调整 /tmp
@@ -67,7 +71,22 @@ systemd=true
 ## 设置中文
 
 ```bash
-# sudo zypper install wqy-zenhei-fonts
+sudo zypper install glibc-locale glibc-lang
+
+sudo yast2 language
+sudo yast2 timezone
+
+echo 'export LANG="zh_CN.UTF-8"' | tee -a ~/.profile
+
+# 可暂不安装字体
+sudo zypper install \
+	google-noto-serif-fonts \
+	google-noto-sans-sc-fonts \
+	google-noto-sans-sc-mono-fonts 
+   
+# sudo zypper install wqy-zenhei-fonts wqy-microhei-fonts ibus-pinyin
+
+# 暂不执行下列手工修改命令
 sudo localectl set-locale LANG=zh_CN.UTF-8
 
 #
@@ -83,7 +102,8 @@ RC_LC_ALL="zh_CN.UTF-8"
 sudo zypper ref
 
 # 
-sudo zypper install git nano tree
+sudo zypper install git nano tree \
+	python311-devel python311-setuptools
 
 # 配置 git
 git config --global user.email "14991386@qq.com"
@@ -104,7 +124,7 @@ sudo zypper install \
 	glibc-devel-static 
 
 # 51单片机C编译器
-sudo zypper install sdcc sdcc-libc-sources
+# sudo zypper install sdcc sdcc-libc-sources
 
 # 
 sudo zypper install \
