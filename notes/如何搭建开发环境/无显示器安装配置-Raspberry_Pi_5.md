@@ -48,12 +48,34 @@ network={
 
 下面，可以通过SSH协议来访问我们的树莓派了。在 Windows 下，我们可以使用 [PuTTY](https://link.zhihu.com/?target=https%3A//www.putty.org/) 这个软件，
 
-树莓派的默认用户名是pi，密码是raspberry。
+~~树莓派的默认用户名是pi，密码是raspberry。~~
+
+新版本的os基于安全原因，已删除了pi帐号。需要自己配置新帐号：
+
+打开tf卡的根目录（boot的根目录），创建 userconf文件，该文件内输入用户名和密码的密文，例如，格式如下：
+
+```
+用户名:密码密文
+```
+
+以下例子，用户名为pi，密码为raspberry的密文
+
+```
+pi:$6$4ilokQRQxmURT.py$aJWBQ5yniJJPwV3CKawYJcnSK5JZGhrVZYF3K4omRUFv6KL0MysEH7F4NZRMNMcYF.U3xsQvWrx7ZL2GKxuv.1
+```
+
+保存文件并安全退出tf卡。把tf卡装回树莓派的tf卡槽，开机后，系统就会自动配置用户名和密码，pi 密码是 raspberry。
+
+要生成加密密码的密文，最简单的方法是在已经运行的树莓派上使用 OpenSSL——打开一个终端窗口并输入:
 
 ```bash
-ssh pi@raspberrypi.local
-# 或
-ssh pi@ip地址
+echo 'mypassword' | openssl passwd -6 -stdin
+```
+
+回车后，就会得出一段密文。把`mypassword`替换成你想设置的密码，就得出你的密码密文，这个方式非常安全，相同的密码每次生成的密文都不一样的。
+
+```bash
+ssh user@ip地址
 ```
 
 
