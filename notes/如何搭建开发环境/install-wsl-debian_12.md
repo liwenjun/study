@@ -1,14 +1,14 @@
-# 实战`Ubuntu-22.04`配置`ESP`开发环境
+# 实战`Debian`搭建开发环境
 
-> 2025-02-10  以下安装软件版本均为此日期时的最新版本
+> 2025-03-08  以下安装软件版本均为此日期时的最新版本
 
 ```bash
 # 在线查看可用 wsl 包
 wsl --list --online
 
 # 安装
-# wsl --install --no-launch --web-download --distribution Ubuntu-22.04
-wsl --install --web-download --distribution Ubuntu-22.04
+# wsl --install --no-launch --web-download --distribution Debian
+wsl --install --web-download --distribution Debian
 ```
 
 ## 基本配置项
@@ -18,8 +18,17 @@ wsl --install --web-download --distribution Ubuntu-22.04
 echo "lee ALL=(ALL) NOPASSWD: ALL" | sudo tee /etc/sudoers.d/lee
 sudo chmod 0440 /etc/sudoers.d/lee
 
+# 编辑
+sudo nano /etc/wsl.conf
+
+# 加入以下内容
+[boot]
+systemd=true
+
 # 使用内存盘
 sudo systemctl link /usr/share/systemd/tmp.mount
+
+# 重启
 
 # 使用内存盘
 rm -fr ~/.cache/
@@ -51,23 +60,57 @@ index-url = https://pypi.tuna.tsinghua.edu.cn/simple
 trusted-host = https://pypi.tuna.tsinghua.edu.cn
 EOF
 
-# 配置 git
-git config --global user.email "14991386@qq.com"
-git config --global user.name "liwenjun"
-
 # 解决 GUI 应用程序启动报错
 echo "sudo rm -fr /tmp/.X11-unix && sudo ln -s /mnt/wslg/.X11-unix /tmp/.X11-unix" | sudo tee -a /etc/bash.bashrc
 
-# 删除不用的软件包 snapd、packagekit、vim-tiny
-sudo apt autoremove --purge -y \
-	snapd \
-	packagekit \
-	vim-tiny
-	
+# 删除不用的软件包 vim-tiny
+sudo apt autoremove --purge -y vim-tiny
+
 # 退出 wsl 回到 windows
 exit
 wsl --shutdown
 wsl	
+```
+
+## 大版本升级
+
+```bash
+# 从 Debian 11 升级到 Debian 12
+sudo apt update
+sudo apt upgrade
+sudo apt full-upgrade
+sudo apt autoremove
+
+# 完成上述命令后，重新启动 Debian 11 系统：
+
+# 记下关于 Debian 11 的几个信息
+uname -mr
+# > 5.15.167.4-microsoft-standard-WSL2 x86_64
+cat /etc/debian_version
+# > 11.3
+
+# 修改 /etc/apt/sources.list 
+# 默认注释了源码镜像以提高 apt update 速度，如有需要可自行取消注释
+deb https://mirrors.tuna.tsinghua.edu.cn/debian/ bookworm main contrib non-free non-free-firmware
+# deb-src https://mirrors.tuna.tsinghua.edu.cn/debian/ bookworm main contrib non-free non-free-firmware
+
+deb https://mirrors.tuna.tsinghua.edu.cn/debian/ bookworm-updates main contrib non-free non-free-firmware
+# deb-src https://mirrors.tuna.tsinghua.edu.cn/debian/ bookworm-updates main contrib non-free non-free-firmware
+
+deb https://mirrors.tuna.tsinghua.edu.cn/debian/ bookworm-backports main contrib non-free non-free-firmware
+# deb-src https://mirrors.tuna.tsinghua.edu.cn/debian/ bookworm-backports main contrib non-free non-free-firmware
+
+# 以下安全更新软件源包含了官方源与镜像站配置，如有需要可自行修改注释切换
+deb https://security.debian.org/debian-security bookworm-security main contrib non-free non-free-firmware
+# deb-src https://security.debian.org/debian-security bookworm-security main contrib non-free non-free-firmware
+
+# 更新
+sudo apt update
+sudo apt upgrade
+sudo apt full-upgrade
+sudo apt autoremove
+
+# 重新启动
 ```
 
 ## 配置中文
@@ -115,11 +158,16 @@ fcitx-config-gtk3
 
 ```bash
 # 安装
-sudo apt install wget nano unzip tree \
+sudo apt install curl git \
+    wget unzip tree \
 	build-essential gdb cmake \
 	libssl-dev libffi-dev \
 	pkg-config \
-	python3 python3-pip python3-venv python3-setuptools 
+	python3-dev python3-pip python3-venv python3-setuptools 
+
+# 配置 git
+git config --global user.email "14991386@qq.com"
+git config --global user.name "liwenjun"
 
 # 安装最新稳定版clang, 当前18
 sudo apt install lsb-release wget software-properties-common gnupg
@@ -138,7 +186,6 @@ sudo apt install flex bison gperf \
 mkdir -p ~/esp
 cd ~/esp
 git clone -b v5.4 --recursive git@github.com:espressif/esp-idf.git
-# git clone -b v5.4 --recursive https://github.com/espressif/esp-idf.git
 cd esp-idf
 git submodule update --init --recursive
 
@@ -217,19 +264,24 @@ source export.sh
 ## 安装配置 `Mosquitto`
 
 ```bash
-sudo apt-add-repository ppa:mosquitto-dev/mosquitto-ppa
-sudo apt update
-sudo apt search mosquitto
-sudo apt install mosquitto
+sudo apt install mosquitto mosquitto-dev
+
+# Download the EMQX repository
+curl -s https://assets.emqx.com/scripts/install-emqx-deb.sh | sudo bash
+
+# Install EMQX
+sudo apt-get install emqx
+
+# Run EMQX
+sudo systemctl start emqx
 ```
 
 ## 配置 rust 开发环境
 
 ```bash
 # 安装 rust 开发环境 
-# latest update on 2024-11-28, rust version 1.83.0 (90b35a623 2024-11-26)
 #RUSTUP_DIST_SERVER=https://mirrors.tuna.tsinghua.edu.cn/rustup \
-#RUSTUP_UPDATE_ROOT=https://mirrors.tuna.tsinghua.edu.cn/rustup/rustup \
+RUSTUP_UPDATE_ROOT=https://mirrors.tuna.tsinghua.edu.cn/rustup/rustup \
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 
 # 删除html帮助文件，节省存储空间
@@ -293,37 +345,6 @@ cargo install diesel_cli --no-default-features --features "postgres sqlite"
 # cargo install mdbook mdbook-mermaid
 ```
 
-## `Arduino-IDE`开发环境
-
-[Windows WSL子系统Ubuntu22.04安装`Nvidia`显卡驱动](https://blog.csdn.net/no1xium/article/details/131299917)
-
-```bash
-# Arduino-IDE 依赖
-sudo apt install libnss3
-
-#
-sudo usermod -a -G dialout $USER && \
-sudo apt install python3-serial && \
-mkdir -p ~/Arduino/hardware/espressif && \
-cd ~/Arduino/hardware/espressif && \
-git clone --recursive git@github.com:espressif/arduino-esp32.git esp32 && \
-cd esp32/tools && \
-python3 get.py
-# get.py 使用了 ../package/*.json 配置文件，修改此文件的url指向国内源，可加快速度 
-# 将 https://github.com 替换为 https://dl.espressif.cn/github_assets
-
-# 补充 Windows 环境下的手动安装流程
-# 1、 进入我的文档目录 C:/Users/lee/Documents
-# 2、 创建并进入子目录 [C:/Users/lee/Documents/]Arduino/hardware/espressif
-cd C:/Users/lee/Documents/Arduino/hardware/espressif
-git clone --recursive git@github.com:espressif/arduino-esp32.git esp32
-cd esp32
-git submodule update --init --recursive
-# 在安装编译工具前，先编辑配置文件 package/package_esp32_index.template.json 使用国内源
-#
-./tools/get.exe
-```
-
 ## 清理并导出
 
 ```bash
@@ -338,7 +359,7 @@ rm -fr ~/.bash_history
 # 导出分发包
 cmd
 wsl --shutdown
-wsl --export Ubuntu-22.04 - | gzip -9 > z:\rootfs.tar.gz
+wsl --export Debian - | gzip -9 > z:\rootfs.tar.gz
 ```
 
 ## 用户配置
@@ -347,6 +368,6 @@ windows下执行：
 
 ```cmd
 # 设置wsl默认用户为lee
-wslconfig /s Ubuntu
-C:\wsl\Ubuntu\Ubuntu.exe config --default-user lee
+wslconfig /s Debian
+C:\wsl\Debian\Debian.exe config --default-user lee
 ```
