@@ -4,6 +4,16 @@
 
 去微软官方下载分发包 [`openSUSE Tumbleweed`](https://aka.ms/wsl-opensuse-tumbleweed)
 
+
+```bash
+# 在线查看可用 wsl 包
+wsl --list --online
+
+# 安装
+# wsl --install --no-launch --web-download --distribution openSUSE-Tumbleweed
+wsl --install --web-download --distribution openSUSE-Tumbleweed
+```
+
 ## 初始安装
 
 按标准方法安装。设置用户`lee`。
@@ -14,14 +24,16 @@ echo "lee ALL=(ALL) NOPASSWD: ALL" | sudo tee /etc/sudoers.d/lee
 sudo chmod 0440 /etc/sudoers.d/lee
 
 # 解析git地址 
-echo "185.199.108.133 raw.githubusercontent.com" | sudo tee -a /etc/hosts
-echo "185.199.109.133 raw.githubusercontent.com" | sudo tee -a /etc/hosts
-echo "185.199.110.133 raw.githubusercontent.com" | sudo tee -a /etc/hosts
-echo "185.199.111.133 raw.githubusercontent.com" | sudo tee -a /etc/hosts
-echo "140.82.112.4 github.com" | sudo tee -a /etc/hosts
-echo "140.82.114.4 www.github.com" | sudo tee -a /etc/hosts
-echo "199.232.5.194 github.global.ssl.fastly.net" | sudo tee -a /etc/hosts
-echo "54.231.114.219 github-cloud.s3.amazonaws.com" | sudo tee -a /etc/hosts
+cat | sudo tee -a /etc/hosts <<EOF
+185.199.108.133 raw.githubusercontent.com
+185.199.109.133 raw.githubusercontent.com
+185.199.110.133 raw.githubusercontent.com
+185.199.111.133 raw.githubusercontent.com
+140.82.112.4 github.com
+140.82.114.4 www.github.com
+199.232.5.194 github.global.ssl.fastly.net
+54.231.114.219 github-cloud.s3.amazonaws.com
+EOF
 
 # 从 Snapshot 版本 20200806 开始，全新安装将默认使用 tmpfs 作为 /tmp。
 # 调整 /tmp
@@ -103,7 +115,7 @@ sudo zypper ref
 
 # 
 sudo zypper install git nano tree \
-	python311-devel python311-setuptools
+	python313-devel python313-pip python313-setuptools
 
 # 配置 git
 git config --global user.email "14991386@qq.com"
@@ -118,13 +130,13 @@ sudo zypper install \
 	clang clang-tools \
 	lldb lld \
 	cmake \
-	gcc gcc-c++ \
-	gcc-locale \
-	gdb \
-	glibc-devel-static 
+	gcc gcc-c++ gdb gcc-locale \
+	glibc-devel-static \
+	python3-clang
 
-# 51单片机C编译器
-# sudo zypper install sdcc sdcc-libc-sources
+# refrence
+sudo apt install flex bison gperf \
+	ninja-build ccache
 
 # 
 sudo zypper install \
@@ -133,12 +145,6 @@ sudo zypper install \
 	sqlite3-devel \
 	ncurses-devel \
 	libzip-devel
-
-#
-sudo zypper install \
-	python311-devel \
-	python311-pip \
-	python3-clang
 ```
 
 ### rust 工具链
@@ -154,10 +160,19 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 rm -fr ~/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/share/doc/rust/html
 
 #
+mkdir -p ~/.cargo/registry
+ln -s /tmp ~/.cargo/registry/src
+
+# 使用本地资源
+cd ~/.cargo/registry
+ln -s /mnt/c/Users/lee/scoop/persist/rustup-msvc/.cargo/registry/cache
+ln -s /mnt/c/Users/lee/scoop/persist/rustup-msvc/.cargo/registry/index
+
+#
 cat > ~/.cargo/config.toml <<EOF
 [build]
 # jobs = 1                      # number of parallel jobs, defaults to # of CPUs
-target-dir = "/tmp/target"         # path of where to place all generated artifacts
+target-dir = "/var/tmp/target"         # path of where to place all generated artifacts
 incremental = true            # whether or not to enable incremental compilation
 
 [cargo-new]
@@ -195,39 +210,6 @@ EOF
 cargo install --locked mdbook mdbook-mermaid
 cargo install sqlx-cli --no-default-features -F postgres,native-tls,sqlite
 cargo install diesel_cli --no-default-features --features "postgres sqlite"
-
-# 嵌入式开发工具
-
-# Cortex-M0, M0+, and M1 (ARMv6-M architecture):
-rustup target add thumbv6m-none-eabi
-
-# Cortex-M3 (ARMv7-M architecture):
-rustup target add thumbv7m-none-eabi
-
-# Cortex-M4 and M7 without hardware floating point (ARMv7E-M architecture):
-rustup target add thumbv7em-none-eabi
-
-# Cortex-M4F and M7F with hardware floating point (ARMv7E-M architecture):
-rustup target add thumbv7em-none-eabihf
-
-# Cortex-M23 (ARMv8-M architecture):
-rustup target add thumbv8m.base-none-eabi
-
-# Cortex-M33 and M35P (ARMv8-M architecture):
-rustup target add thumbv8m.main-none-eabi
-
-# Cortex-M33F and M35PF with hardware floating point (ARMv8-M architecture):
-rustup target add thumbv8m.main-none-eabihf
-
-# cargo-binutils
-cargo install cargo-binutils
-rustup component add llvm-tools
-
-# cargo-generate
-cargo install cargo-generate
-
-#
-sudo zypper install gdb openocd # qemu-arm
 ```
 
 ## 安装 postgresql
@@ -239,10 +221,9 @@ sudo zypper install postgresql postgresql-devel postgresql-contrib
 
 # 版本
 psql --version
-## psql (PostgreSQL) 17.2
+## psql (PostgreSQL) 17.4
 
 # 查询状态
-#sudo service postgresql status
 sudo systemctl status postgresql
 
 # 启停操作
@@ -272,7 +253,7 @@ host    all             all             0.0.0.0/0            scram-sha-256
 host    all             all             ::/0                 scram-sha-256
 
 # 重启生效
-sudo service postgresql restart
+sudo systemctl restart postgresql
 ```
 
 ```bash
@@ -322,8 +303,6 @@ postgres-# \l
 # 指定角色连接到数据库。
 psql lee -d <db_name>
 ```
-
-
 
 ```bash
 # 创建开发用数据库用户

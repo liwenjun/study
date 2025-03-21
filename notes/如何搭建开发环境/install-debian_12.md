@@ -30,18 +30,23 @@ sudo rm -fr tmp
 sudo ln -s /tmp
 
 # 解析git地址 
-echo "185.199.108.133 raw.githubusercontent.com" | sudo tee -a /etc/hosts
-echo "185.199.109.133 raw.githubusercontent.com" | sudo tee -a /etc/hosts
-echo "185.199.110.133 raw.githubusercontent.com" | sudo tee -a /etc/hosts
-echo "185.199.111.133 raw.githubusercontent.com" | sudo tee -a /etc/hosts
-echo "140.82.112.4 github.com" | sudo tee -a /etc/hosts
-echo "140.82.114.4 www.github.com" | sudo tee -a /etc/hosts
-echo "199.232.5.194 github.global.ssl.fastly.net" | sudo tee -a /etc/hosts
-echo "54.231.114.219 github-cloud.s3.amazonaws.com" | sudo tee -a /etc/hosts
+sudo tee -a /etc/hosts <<EOF
+185.199.108.133 raw.githubusercontent.com
+185.199.109.133 raw.githubusercontent.com
+185.199.110.133 raw.githubusercontent.com
+185.199.111.133 raw.githubusercontent.com
+140.82.112.4 github.com
+140.82.114.4 www.github.com
+199.232.5.194 github.global.ssl.fastly.net
+54.231.114.219 github-cloud.s3.amazonaws.com
+EOF
 
 # 配置 git
 git config --global user.email "14991386@qq.com"
 git config --global user.name "liwenjun"
+
+# 为 npm 配置国内源
+echo 'registry=https://registry.npmmirror.com' >> ~/.npmrc
 
 # 为 pip 配置国内源
 mkdir -p ~/.pip
@@ -72,7 +77,7 @@ deb https://security.debian.org/debian-security bookworm-security main contrib n
 
 # 更新
 sudo apt update
-sudo apt upgrade
+sudo apt full-upgrade
 sudo apt autoremove
 
 # 重新启动
@@ -147,6 +152,20 @@ nvidia-smi
 - 驱动程序未加载：如果驱动程序未加载，请确保已安装nvidia-kernel-dkms软件包，该软件包可确保Nvidia内核模块正确构建并适用于系统。
 - 错误的驱动程序：如果安装了错误的驱动程序，可以使用sudo apt remove nvidia-*来删除它，然后安装正确的驱动程序。
 
+## 安装 Qemu
+
+```bash
+sudo apt update
+sudo apt install qemu-system \
+	libvirt-daemon-system libvirt-clients \
+	bridge-utils virt-manager \
+	qemu-guest-agent
+
+#
+sudo usermod -aG kvm $USER
+sudo usermod -aG libvirt $USER
+```
+
 ## 安装 Microsoft Edge 和 Vscode
 
 ```bash
@@ -168,31 +187,63 @@ sudo apt update
 sudo apt install code microsoft-edge-stable
 ```
 
+## 配置 python 环境
+
+```bash
+# 安装 Thonny 及 python3扩展
+sudo apt install thonny \
+	python3-ptyprocess \
+	python3-tk tk-dev \
+	python3-dev python3-venv \
+	python3-pip python3-setuptools 
+
+# 安装 poetry 2.1.1
+curl -sSL https://install.python-poetry.org | python3 -
+
+
+# 配置 pyenv
+curl https://pyenv.run | bash
+
+# Running `pyenv install -l` gives the list of all avaisudo apt install 
+# to download and install Python 3.13, run:
+pyenv install 3.13
+```
+
 ## 本机 `C/C++` 开发环境
 
 ```bash
 # 安装
 sudo apt install lsb-release unzip tree \
 	aria2 pkg-config \
-	build-essential gdb cmake \
-	libssl-dev libffi-dev \
-	python3-dev python3-pip python3-venv python3-setuptools 
+	flex bison gperf \
+	ninja-build ccache \
+	build-essential gdb \
+	libssl-dev libffi-dev 
 
-# 安装最新稳定版clang, 当前18
+# 安装新版本 cmake
+cd /tmp
+VER=3.31.6 && \
+	wget https://github.com/Kitware/CMake/releases/download/v$VER/cmake-$VER-linux-x86_64.sh && \
+	chmod +x cmake-$VER-linux-x86_64.sh && cd /opt && /tmp/cmake-$VER-linux-x86_64.sh
+
+# 安装最新稳定版clang, 当前19
 sudo bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)"
-```
 
-## 配置 python 环境
+# 添加所有可用的 llvm-config 版本到 update-alternatives
+sudo update-alternatives --install /usr/bin/llvm-config llvm-config /usr/bin/llvm-config-19 100
+# 选择默认版本
+sudo update-alternatives --config llvm-config
 
-```bash
-# pyenv
-curl https://pyenv.run | bash
-
-# to download and install Python 3.13, run:
-pyenv install 3.13
-
-# Running `pyenv install -l` gives the list of all available versions.
-
+# 添加所有可用的 clang 版本到 update-alternativessudo
+sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-19 100
+sudo update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-19 100
+sudo update-alternatives --install /usr/bin/clang-cpp clang-cpp /usr/bin/clang-cpp-19 100
+sudo update-alternatives --install /usr/bin/clangd clangd /usr/bin/clangd-19 100
+# 选择默认版本
+sudo update-alternatives --config clang
+sudo update-alternatives --config clang++
+sudo update-alternatives --config clang-cpp
+sudo update-alternatives --config clangd
 ```
 
 ## 安装 postgresql
@@ -303,13 +354,73 @@ postgres=# \q
 psql -U dev -d devdb -h localhost
 ```
 
+## 安装配置 `Docker`
+
+```bash
+#
+curl -sSL https://download.docker.com/linux/debian/gpg | gpg --dearmor | sudo tee /usr/share/keyrings/docker-ce.gpg > /dev/null
+#
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-ce.gpg] https://download.docker.com/linux/debian $(lsb_release -sc) stable" | sudo tee /etc/apt/sources.list.d/docker.list
+
+# 使用国内镜像源 
+curl -sS https://download.docker.com/linux/debian/gpg | gpg --dearmor | sudo tee /usr/share/keyrings/docker-ce.gpg > /dev/null
+#
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-ce.gpg] https://mirrors.tuna.tsinghua.edu.cn/docker-ce/linux/debian $(lsb_release -sc) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+#
+sudo apt update
+sudo apt install docker-ce docker-ce-cli containerd.io docker-compose-plugin
+
+# 如果需要某个特定用户可以用 Docker rootless 模式运行 Docker，那么可以把这个用户也加入 docker 组，比如我们把 lee 用户加进去：
+sudo apt install docker-ce-rootless-extras
+sudo usermod -aG docker lee
+
+# 检查
+docker version
+```
+
+### 修改 Docker 配置
+
+以下配置添加国内镜像源，会限制日志文件大小，防止 Docker 日志塞满硬盘 (泪的教训)：
+
+```bash
+# 写入配置文件
+sudo tee /etc/docker/daemon.json <<-'EOF'
+{
+    "registry-mirrors": [
+      "https://docker-0.unsee.tech",
+      "https://docker-cf.registry.cyou",
+      "https://docker.1panel.live"
+    ],
+    "log-driver": "json-file",
+    "log-opts": {
+        "max-size": "20m",
+        "max-file": "3"
+    }
+}
+EOF
+```
+
+然后重启 Docker 服务：
+
+```bash
+sudo systemctl restart docker
+```
+
+好了，我们已经安装好了
+
+### 拉常用`docker`资源
+
+```bash
+# pull images
+docker compose -f oracle.yaml pull
+```
+
 ## `ESP-IDF` 开发工具链
 
 ```bash
 # 第一步：安装准备
-sudo apt install flex bison gperf \
-	ninja-build ccache \
-	dfu-util libusb-1.0-0
+sudo apt install dfu-util libusb-1.0-0
 
 # 第二步：获取 ESP-IDF
 mkdir -p ~/esp
@@ -359,8 +470,7 @@ cd micropython
 git submodule update --init --recursive
 
 # 先构建才能进行预编译
-cd mpy-cross
-make
+make -C mpy-cross
 
 # 构建文档
 python3 -m venv env
@@ -369,8 +479,21 @@ pip install -r docs/requirements.txt
 cd docs
 make html
 
+# 构建 unix port
+cd ports/unix
+make submodules
+make
+
+LINK build-standard/micropython
+   text    data     bss     dec     hex filename
+ 725974   69304    7088  802366   c3e3e build-standard/micropython
+
+# 保存一份到可查找路径下
+cp build-standard/micropython ~/.local/bin/
+
+
 # 如果需要构建 stm32 固件，需要 ARM 交叉编译器：
-sudo apt install gcc-arm-none-eabi libnewlib-arm-none-eabi
+#sudo apt install gcc-arm-none-eabi libnewlib-arm-none-eabi
 
 # 编译v1.24.1仅支持 idf v5.2.2
 # 切换idf版本
@@ -382,6 +505,144 @@ git submodule update --init --recursive
 export IDF_GITHUB_ASSETS="dl.espressif.cn/github_assets"
 ./install.sh all
 source export.sh 
+# 删除不兼容的工具
+python /home/lee/esp/esp-idf/tools/idf_tools.py uninstall
+
+# 原版编译，仅支持4M或8M
+cd ~/micropython/ports/esp32
+make BOARD=ESP32_GENERIC_S3 submodules
+export IDF_TARGET=esp32s3
+make BOARD=ESP32_GENERIC_S3 BOARD_VARIANT=SPIRAM_OCT
+
+# 先擦除
+python -m esptool --chip esp32s3 erase_flash
+
+# 烧写
+python -m esptool --chip esp32s3 -b 460800 --before default_reset --after hard_reset write_flash --flash_mode dio --flash_size 8MB --flash_freq 80m 0x0 build-ESP32_GENERIC_S3-SPIRAM_OCT/bootloader/bootloader.bin 0x8000 build-ESP32_GENERIC_S3-SPIRAM_OCT/partition_table/partition-table.bin 0x10000 build-ESP32_GENERIC_S3-SPIRAM_OCT/micropython.bin
+
+bootloader  @0x000000    19152  (   13616 remaining)
+partitions  @0x008000     3072  (    1024 remaining)
+application @0x010000  1597168  (  434448 remaining)
+total                  1662704
+```
+
+### 定制编译 esp32-s3-N16R8 版本
+
+```bash
+cd ~/micropython/ports/esp32/boards/
+cp -R ESP32_GENERIC_S3 ESP32_GENERIC_S3_N16R8
+cd ESP32_GENERIC_S3_N16R8
+```
+
+只保留4个文件：
+
+```
+board.json
+mpconfigboard.cmake
+mpconfigboard.h
+sdkconfig.board
+```
+
+`board.json`
+```json
+{
+    "deploy": [
+        "../deploy_s3.md"
+    ],
+    "docs": "",
+    "features": [
+        "BLE",
+        "External Flash",
+        "External RAM",
+        "WiFi"
+    ],
+    "images": [
+        "generic_s3.jpg"
+    ],
+    "mcu": "esp32s3",
+    "product": "ESP32-S3-N16R8",
+    "thumbnail": "",
+    "url": "https://www.espressif.com/en/products/modules",
+    "vendor": "Espressif"
+}
+```
+
+`mpconfigboard.cmake`
+```cmake
+set(IDF_TARGET esp32s3)
+
+set(SDKCONFIG_DEFAULTS
+    boards/sdkconfig.base
+    ${SDKCONFIG_IDF_VERSION_SPECIFIC}
+    boards/sdkconfig.usb
+    boards/sdkconfig.ble
+    boards/sdkconfig.spiram_sx
+    boards/ESP32_GENERIC_S3_N16R8/sdkconfig.board
+    boards/sdkconfig.240mhz
+    boards/sdkconfig.spiram_oct
+)
+
+list(APPEND MICROPY_DEF_BOARD
+    MICROPY_HW_BOARD_NAME="Generic ESP32S3 module with Octal-SPIRAM"
+```
+
+`mpconfigboard.h`
+```h
+#ifndef MICROPY_HW_BOARD_NAME
+// Can be set by mpconfigboard.cmake.
+#define MICROPY_HW_BOARD_NAME               "Generic ESP32S3 module"
+#endif
+#define MICROPY_HW_MCU_NAME                 "ESP32S3"
+
+// Enable UART REPL for modules that have an external USB-UART and don't use native USB.
+#define MICROPY_HW_ENABLE_UART_REPL         (1)
+
+#define MICROPY_HW_I2C0_SCL                 (9)
+#define MICROPY_HW_I2C0_SDA                 (8)
+```
+
+`sdkconfig.board`
+```
+CONFIG_ESPTOOLPY_FLASHMODE_QIO=y
+CONFIG_ESPTOOLPY_FLASHFREQ_80M=y
+CONFIG_ESPTOOLPY_AFTER_NORESET=y
+
+CONFIG_ESPTOOLPY_FLASHSIZE_4MB=
+CONFIG_ESPTOOLPY_FLASHSIZE_8MB=
+CONFIG_ESPTOOLPY_FLASHSIZE_16MB=y
+CONFIG_PARTITION_TABLE_CUSTOM=y
+CONFIG_PARTITION_TABLE_CUSTOM_FILENAME="partitions-16MiB.csv"
+```
+
+编译+烧录：
+
+```bash
+cd ~/micropython/ports/esp32
+make BOARD=ESP32_GENERIC_S3_N16R8 submodules
+export IDF_TARGET=esp32s3
+make BOARD=ESP32_GENERIC_S3_N16R8
+
+Partition table binary generated. Contents:
+*******************************************************************************
+# ESP-IDF Partition Table
+# Name, Type, SubType, Offset, Size, Flags
+nvs,data,nvs,0x9000,24K,
+phy_init,data,phy,0xf000,4K,
+factory,app,factory,0x10000,1984K,
+vfs,data,fat,0x200000,14M,
+*******************************************************************************
+
+# 先擦除
+python -m esptool --chip esp32s3 erase_flash
+
+# 烧写
+python -m esptool --chip esp32s3 -b 460800 --before default_reset --after no_reset write_flash --flash_mode dio --flash_size 16MB --flash_freq 80m 0x0 build-ESP32_GENERIC_S3_N16R8/bootloader/bootloader.bin 0x8000 build-ESP32_GENERIC_S3_N16R8/partition_table/partition-table.bin 0x10000 build-ESP32_GENERIC_S3_N16R8/micropython.bin
+or from the "/home/lee/micropython/ports/esp32/build-ESP32_GENERIC_S3_N16R8" directory
+ python -m esptool --chip esp32s3 -b 460800 --before default_reset --after no_reset write_flash "@flash_args"
+bootloader  @0x000000    19152  (   13616 remaining)
+partitions  @0x008000     3072  (    1024 remaining)
+application @0x010000  1597168  (  434448 remaining)
+total                  1662704
 ```
 
 ## 安装配置 `Mosquitto`
@@ -450,7 +711,7 @@ sudo tar -xvf /tmp/android-studio-2024.3.1.13-linux.tar.gz
 
 # Step 4
 cd android-studio/bin
-./studio.sh
+./studio
 
 # Follow the on-screen instructions to complete the setup wizard. This process includes selecting a UI theme, downloading necessary SDK components, and configuring settings.
 ```
@@ -515,6 +776,57 @@ cargo install diesel_cli --no-default-features --features "postgres sqlite"
 # cargo install ripgrep
 # cargo install mdbook mdbook-mermaid
 ```
+
+### tauri 开发支持
+
+```bash
+# 安装依赖包
+sudo apt install libwebkit2gtk-4.1-dev \
+  libxdo-dev \
+  libssl-dev \
+  file \
+  libayatana-appindicator3-dev \
+  librsvg2-dev
+
+# 安装开发工具
+cargo install create-tauri-app --locked
+cargo install tauri-cli --locked
+
+# 测试一下
+cd /tmp
+cargo create-tauri-app
+cd tauri-app
+cargo tauri dev
+```
+
+### tauri + android 开发支持
+
+```bash
+# 安装 android studio
+
+# 当前用户加入kvm, 运行模拟器
+# sudo groupadd -r kvm
+sudo gpasswd -a $USER kvm
+
+# Use the SDK Manager in Android Studio to install the following:
+Android SDK Platform
+Android SDK Platform-Tools
+NDK (Side by side)
+Android SDK Build-Tools
+Android SDK Command-line Tools
+
+# Set ANDROID_HOME and NDK_HOME environment variables.
+export ANDROID_HOME="$HOME/Android/Sdk"
+export NDK_HOME="$ANDROID_HOME/ndk/$(ls -1 $ANDROID_HOME/ndk)"
+
+# Add the Android targets with rustup:
+rustup target add \
+    aarch64-linux-android \
+    armv7-linux-androideabi \
+	i686-linux-android \
+	x86_64-linux-android
+```
+
 
 ## 配置 elm 开发工具
 
@@ -581,6 +893,130 @@ curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | sh
 ghcup tui
 ```
 
+## 安装电子书阅读软件
+
+[calibre](https://calibre-ebook.com/zh_CN)
+[koodo reader](https://koodo.960960.xyz/zh)
+[foliate](https://johnfactotum.github.io/foliate/)
+
+
+```bash
+#
+sudo apt install foliate
+
+# 安装程序之前，您必须在系统上安装 xdg-utils，wget，xz-utils和python
+# 独立安装，不需要root权限
+wget -nv -O- https://download.calibre-ebook.com/linux-installer.sh | sh /dev/stdin install_dir=~/.local isolated=y
+
+#sudo -v && wget --no-check-certificate -nv -O- https://download.calibre-ebook.com/linux-installer.sh | sudo sh /dev/stdin
+
+# 如果在终端运行Calibre时遇到关于Wayland的错误，且Calibre未启动，请以QT_QPA_PLATFORM=xcb calibre身份运行Calibre，这将阻止其使用Wayland。
+
+# 如果出现错误 Could not load the Qt platform plugin xcb 您缺少一些所需的X11-XCB库，例如libxcb-cursor0或libxcb-xinerama0，有关 详细信息
+
+# 如果你在服务器上得到关于缺失“libEGL”的报错，你可能需要安装如“libegl1”和“libopengl0”等一些OpenGL包。
+```
+
+
+## 安装 Beyond Compare
+
+```bash
+cd /tmp
+tar -zxvf bcompare-5.0.4.30422.x86_64.tar.gz
+cd bcompare-5.0.4.30422
+# copy BCompare BC5key.txt 到本目录
+sudo ./install.sh
+```
+
+
+## 安装 `Typora`
+
+```bash
+# 解压缩安装包
+cd ~/.local
+tar -Jxvf typora.tar.xz
+
+# 创建链接
+cd ~/.local/bin
+ln -s ../Typora-linux-x64/Typora typora
+
+# Crack
+cd ../Typora-linux-x64/Typora
+./node_inject
+./license-gen
+
+License for you: 8M2MHH-F5Y7FM-LTUE49-LRJ7DT
+```
+
+## 安装其他工具
+
+```bash
+# pdf 分割与合并工具
+#sudo apt install pdfsam
+```
+
+## 清理旧的内核
+
+在运行
+
+```
+sudo apt update && sudo apt upgrade
+```
+
+或者
+
+```
+sudo apt update && sudo apt full-upgrade
+```
+
+后如果更新了新的内核虽然通常情况下会自动更新`GRUB`配置文件
+
+但是还是建议手动运行
+
+```
+sudo update-grub
+```
+
+更新配置文件防止特殊情况没有自动更新`GRUB`配置文件
+
+使用以下命令查看当前正在使用的内核防止删除错误
+
+```
+uname -r
+```
+
+查看系统中安装的所有内核版本
+
+```
+dpkg --list | grep linux-image
+```
+
+运行`apt autoremove --purge`会删除不再使用的旧内核，但系统会保留至少一个备用的内核
+
+```
+sudo apt autoremove --purge
+```
+
+如果你只想保留正在使用的内核可以手动删除指定内核
+
+```
+sudo apt remove --purge linux-image-6.1.0-29-amd64
+```
+
+如果你安装过内核头文件还需要清理内核头文件
+
+列出系统重的内核头文件
+
+```
+dpkg --list | grep linux-headers
+```
+
+清理旧的内核头文件
+
+```
+sudo apt remove --purge linux-headers-6.1.0-29-amd64
+```
+
 ## 清理
 
 ```bash
@@ -590,4 +1026,3 @@ sudo apt clean all
 sudo rm -rf /var/log/*
 rm -fr ~/.bash_history
 ```
-

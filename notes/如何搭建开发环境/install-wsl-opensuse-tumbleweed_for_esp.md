@@ -182,7 +182,105 @@ Install Remote WSL extension in Visual Studio Code
 Install the Remote - WSL, Remote Development and ESP-IDF extensions
 ```
 
+## rust 工具链
 
+```bash
+#  
+# latest update on 2024-11-28, rust version 1.83.0 (90b35a623 2024-11-26)
+#RUSTUP_DIST_SERVER=https://mirrors.tuna.tsinghua.edu.cn/rustup \
+RUSTUP_UPDATE_ROOT=https://mirrors.tuna.tsinghua.edu.cn/rustup/rustup \
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+
+# 删除html帮助文件，节省存储空间
+rm -fr ~/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/share/doc/rust/html
+
+#
+mkdir -p ~/.cargo/registry
+ln -s /tmp ~/.cargo/registry/src
+
+# 使用本地资源
+cd ~/.cargo/registry
+ln -s /mnt/c/Users/lee/scoop/persist/rustup-msvc/.cargo/registry/cache
+ln -s /mnt/c/Users/lee/scoop/persist/rustup-msvc/.cargo/registry/index
+
+#
+cat > ~/.cargo/config.toml <<EOF
+[build]
+# jobs = 1                      # number of parallel jobs, defaults to # of CPUs
+target-dir = "/tmp/target"         # path of where to place all generated artifacts
+incremental = true            # whether or not to enable incremental compilation
+
+[cargo-new]
+vcs = "none"              # VCS to use ('git', 'hg', 'pijul', 'fossil', 'none')
+
+[profile.release]
+panic = "abort" # Strip expensive panic clean-up logic
+codegen-units = 1 # Compile crates one after another so the compiler can optimize better
+lto = true # Enables link to optimizations
+opt-level = "s" # Optimize for binary size
+strip = true # Remove debug symbols
+
+[source.crates-io]
+registry = "https://github.com/rust-lang/crates.io-index"
+replace-with = 'tuna' # 如：tuna、sjtu、ustc，或者 rustcc
+
+# 中国科学技术大学
+[source.ustc]
+registry = "https://mirrors.ustc.edu.cn/crates.io-index"
+
+# 上海交通大学
+[source.sjtu]
+registry = "https://mirrors.sjtug.sjtu.edu.cn/git/crates.io-index/"
+
+# 清华大学
+[source.tuna]
+registry = "https://mirrors.tuna.tsinghua.edu.cn/git/crates.io-index.git"
+
+# rustcc社区
+[source.rustcc]
+registry = "https://code.aliyun.com/rustcc/crates.io-index.git"
+EOF
+
+#
+cargo install --locked mdbook mdbook-mermaid
+cargo install sqlx-cli --no-default-features -F postgres,native-tls,sqlite
+cargo install diesel_cli --no-default-features --features "postgres sqlite"
+
+# 嵌入式开发工具
+
+# Cortex-M0, M0+, and M1 (ARMv6-M architecture):
+rustup target add thumbv6m-none-eabi
+
+# Cortex-M3 (ARMv7-M architecture):
+rustup target add thumbv7m-none-eabi
+
+# Cortex-M4 and M7 without hardware floating point (ARMv7E-M architecture):
+rustup target add thumbv7em-none-eabi
+
+# Cortex-M4F and M7F with hardware floating point (ARMv7E-M architecture):
+rustup target add thumbv7em-none-eabihf
+
+# Cortex-M23 (ARMv8-M architecture):
+rustup target add thumbv8m.base-none-eabi
+
+# Cortex-M33 and M35P (ARMv8-M architecture):
+rustup target add thumbv8m.main-none-eabi
+
+# Cortex-M33F and M35PF with hardware floating point (ARMv8-M architecture):
+rustup target add thumbv8m.main-none-eabihf
+
+# cargo-binutils
+cargo install cargo-binutils
+rustup component add llvm-tools
+
+# cargo-generate
+cargo install cargo-generate
+
+#
+sudo zypper install gdb openocd # qemu-arm
+```
+
+## 
 
 ## 配置 `Arduino-IDE`
 
